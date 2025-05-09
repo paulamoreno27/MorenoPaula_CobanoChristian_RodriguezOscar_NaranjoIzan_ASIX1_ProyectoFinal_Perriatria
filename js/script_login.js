@@ -1,32 +1,59 @@
-function validateUsuario() {
-    const usuario = document.getElementById('usuario');
-    const usuarioError = document.getElementById('usuario-error');
-    if (usuario.value.trim() === '') {
-        usuarioError.textContent = 'El campo Usuario no puede estar vacío.';
-        usuarioError.style.color = 'red';
+function valUsuario() {
+    let valor = document.getElementById("nombre").value;
+    let error_nombre = document.getElementById("nombreError");
+    if (valor == null || valor.length == 0) {
+        error_nombre.textContent = "El campo no puede estar vacío.";
+        return false;
+    } else if (!isNaN(valor)) {
+        error_nombre.textContent = "El nombre no puede contener números.";
+        return false;
+    } else if (valor.length < 3) {
+        error_nombre.textContent = "El nombre debe tener al menos 3 caracteres.";
+        return false;
     } else {
-        usuarioError.textContent = '';
+        error_nombre.textContent = "";
+        return true;
     }
 }
 
-function validateEmail() {
-    const email = document.getElementById('email');
-    const emailError = document.getElementById('email-error');
-    if (email.value.trim() === '') {
-        emailError.textContent = 'El campo Email no puede estar vacío.';
-        emailError.style.color = 'red';
-    } else {
-        emailError.textContent = '';
-    }
-}
 
-function validatePassword() {
-    const password = document.getElementById('password');
-    const passwordError = document.getElementById('password-error');
-    if (password.value.trim() === '') {
-        passwordError.textContent = 'El campo Contraseña no puede estar vacío.';
-        passwordError.style.color = 'red';
-    } else {
-        passwordError.textContent = '';
+function valEmail() {
+        let valor = document.getElementById("email").value;
+        let error_email = document.getElementById("emailError");
+        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
+        if (valor == null || valor.length == 0) {
+            error_email.textContent = "El campo no puede estar vacío.";
+            return false;
+        } else if (!regex.test(valor)) {
+            error_email.textContent = "Introduce un email válido.";
+            return false;
+        } else {
+            error_email.textContent = "";
+            return true;
+        }
     }
+
+
+function valPassword() {
+        let valor = document.getElementById("password").value;
+        let error_password = document.getElementById("passwordError");
+        if (valor == null || valor.length == 0) {
+            error_password.textContent = "El campo no puede estar vacío.";
+            return false;
+        } else if (valor.length < 6) {
+            error_password.textContent = "La contraseña debe tener al menos 6 caracteres.";
+            return false;
+        } else {
+            error_password.textContent = "";
+            return true;
+        }
+    }
+
+
+    // Validar todo el formulario antes de enviarlo
+function validarFormulario() {
+    let validNombre = valNombre();
+    let validEmail = valEmail();
+    let validPassword = valPassword();
+    return validNombre && validEmail && validPassword;
 }

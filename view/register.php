@@ -17,13 +17,6 @@ session_start(); // Ensure session is started to access error messages
             <h2 class="form-label">Registro</h2><br>
         </div>
 
-        <!-- Mensaje de error -->
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
-                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
-
         <div class="mb-3">
             <label for="email">Email:</label>
             <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" onblur="validarEmail()"><br>

@@ -1,0 +1,175 @@
+/* Fuente general */
+body {
+  font-family: 'Tuffy', sans-serif;
+  background-color: #f8f9fa; /* gris claro para fondo general */
+  color: #6ecd8a; /* azul oscuro sobrio para texto */
+  margin: 0;
+  padding: 0;
+}
+
+/* Encabezado principal */
+header {
+  background-color: #6ecd8a; /* azul marino */
+  color: white;
+  padding: 1.5rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  font-family: 'Special Gothic Expanded One', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* Navegación */
+.nav-tabs {
+  background-color: #ffffff; /* tono claro para pestañas */
+  border-bottom: 2px solid #6ecd8a;
+}
+
+.nav-link {
+  color: rgb(88, 194, 120);
+  font-weight: 500;
+}
+
+.nav-link.active {
+  background-color: #9d1010;
+  color: rgb(1, 97, 30) !important;
+  border-color: rgb(1, 97, 30);
+}
+
+.nav-link:hover {
+  color: rgb(1, 97, 30);
+}
+
+/* Secciones del contenido */
+main h2 {
+  color: #369051;
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+main p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #34495e;
+}
+
+/* Botones (si los usas) */
+.btn-primary {
+  background-color: #0a2342;
+  border-color: #0a2342;
+}
+
+.btn-primary:hover {
+  background-color: #1d3557;
+  border-color: #1d3557;
+}
+
+.custom-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+}
+
+.nav-item {
+  list-style: none;
+}
+
+
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------
+
+Login */
+.form-container {
+  max-width: 800px;
+  background-color: #f8f9fa;
+  margin-top: 5%;
+  margin-left: 20%;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container2 {
+  max-width: 800px;
+  background-color: #f8f9fa;
+  margin-top: 1%;
+  margin-left: 20%;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.subtitulos {
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.camposrellenar {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.mensaje-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn {
+  width: 100%;
+  background-color: #6ecd8a;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.btn:hover {
+  background-color: rgb(1, 97, 30);
+}
+
+.registrarse {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: #6ecd8a;
+  text-decoration: none;
+}
+
+.registrarse:hover {
+  text-decoration: underline;
+}
+
+.logo-background {
+  position: fixed;
+  top: 120px; /* debajo del header */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.25;
+  background-image: url('../resources/logo_perriatria.png');
+  background-repeat: no-repeat;
+  background-size: 600px auto;
+  width: 600px;
+  height: 600px;
+  z-index: 0;
+  pointer-events: none;
+}

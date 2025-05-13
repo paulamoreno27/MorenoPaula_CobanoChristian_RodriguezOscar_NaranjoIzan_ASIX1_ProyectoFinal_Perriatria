@@ -3,6 +3,6 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "bd_perriatria";
+$dbname = "db_perriatria";
 
 ?>

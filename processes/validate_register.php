@@ -14,6 +14,20 @@ require '../services/connection.php';
         $errors['usuario'] = "El usuario debe tener al menos 3 caracteres.";
     }
 
+    if (empty($telefono)) {
+        $errors['telefono'] = "El campo de teléfono no puede estar vacío.";
+    } elseif (strlen($telefono) !== 9 || !is_numeric($telefono)) {
+        $errors['telefono'] = "El teléfono debe tener exactamente 9 dígitos numéricos.";
+    }
+
+// Validación de dirección
+    if (empty($direccion)) {
+        $errors['direccion'] = "El campo de dirección no puede estar vacío.";
+    } elseif (strlen($direccion) < 5) {
+        $errors['direccion'] = "La dirección debe tener al menos 5 caracteres.";
+    }
+
+
     // Validar contraseña
     if (strlen($password) < 8) {
         $errors['password'] = "La contraseña debe tener al menos 8 caracteres.";
@@ -33,7 +47,7 @@ require '../services/connection.php';
         $_SESSION['old'] = $_POST;
 
         // Redirigir de vuelta al formulario
-        header('Location: ../pages/register.php');
+        header('Location: ../index.php');
         exit();
     }
 

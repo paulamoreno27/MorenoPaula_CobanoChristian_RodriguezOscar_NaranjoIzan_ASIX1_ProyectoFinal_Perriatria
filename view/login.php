@@ -7,33 +7,42 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="../css/login.css">
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+    <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
     <script src="../js/script_login.js"></script> <!-- Archivo JS para validaciones -->
 </head>
 <body>
-    <div class="loginbox">
-        <form action="../processes/login.proc.php" method="POST">
-            <h1>Login</h1>
-            <div class="form-group">
-                <label for="nombre">Usuario:</label>
-                <input type="text" id="nombre" name="usuario" onblur="valUsuario()" required>
-                <div class="error" id="nombreError"></div>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" onblur="valEmail()" required>
-                <div class="error" id="emailError"></div>
-            </div>
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" onblur="valPassword()" required>
-                <div class="error" id="passwordError"></div>
-            </div>
-            <button type="submit">Enviar</button>
-        </form>
-        <br>
-        <a href="../view/register.php">Register</a>
+    
+    <div class="form-container">
+        <h3>
+            <a href="../index.php" class="btn">Volver al inicio</a>
+        </h3>
+        <h1 class="form-title">Login</h1>
+    
+        <div class="form-content">
+            <form action="../processes/validate_register.php" method="POST" onsubmit="return ValidarFormulario()">
+
+            <label for="nombre" class="subtitulos">Usuario:</label>
+            <input type="text" id="nombre" name="usuario" onblur="valUsuario()" class="camposrellenar" required>
+            <p id="nombreError" class="mensaje-error"></p>
+
+            <label for="email" class="subtitulos">Email:</label>
+            <input type="email" id="email" name="email" onblur="valEmail()" class="camposrellenar" required>
+            <p id="emailError" class="mensaje-error"></p>
+
+            <label for="password" class="subtitulos">Contraseña:</label>
+            <input type="password" id="password" name="password" onblur="valPassword()" class="camposrellenar" required>
+            <p id="passwordError" class="mensaje-error"></p>
+
+            <input class="btn" type="submit" value="Entrar">
+            <a href="./register.php" class="registrarse">¿No tienes cuenta? Regístrate aquí!</a>
+
+            </form>
+        </div>
     </div>
+    <div class="logo-background"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

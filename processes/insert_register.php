@@ -1,25 +1,58 @@
 <?php
 
-include '../services/config.php';
+
 include '../services/connection.php';
+session_start();
 
-if (isset($_POST['nombre'], $_POST['email'], $_POST['password'])) {
-    $nombre = mysqli_real_escape_string($conn, $_POST['nombre']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    // Encriptar la contraseña con MD5
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $nombre = $_REQUEST['usuario'];
+    $email = $_REQUEST['email'];
+    $telefono = $_REQUEST['telefono'];
+    $direccion = $_REQUEST['direccion'];
+    $contrasena = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $confirmContrasena = password_hash($_POST['confirm_password'], PASSWORD_DEFAULT);
 
-    // Insertar el nuevo usuario en la base de datos
-    $insertQuery = "INSERT INTO usuarios (username, email, password) VALUES ('$nombre', '$email', '$hashedPassword')";
-    
-    if (mysqli_query($conn, $insertQuery)) {
-        header("Location: ../view/login.php?success=1"); // Registro exitoso
-    } else {
-        header("Location: ../view/register.php?error=1"); // Error al insertar en la base de datos
+    $sql = "SELECT * FROM usuarios";
+    $result = mysqli_query($conn, $sql);
+
+    foreach ($result as $usuario) {
+        if ($usuario['nombre_propietario'] == $nombre || $usuario['email_propietario'] == $email) { 
+            $_SESSION['error'] = "El usuario o email ya existen.";
+            header("Location:../view/register.php");
+            exit;
+        }
     }
+
+    // Insert en usuarios si no hay errores 
+    $query1 = "INSERT INTO propietario (nombre_propietario, telefono_propietario, direccion_propietario, email_propietario, contraseña_propietario) VALUES (?, ?, ?, ?, ?)";
+    $sentencia1 = mysqli_prepare($conn, $query1);
+
+    if ($sentencia1) {
+        mysqli_stmt_bind_param($sentencia1, "sisss", $nombre, $telefono, $email, $contrasena, $direccion);
+
+        if (!mysqli_stmt_execute($sentencia1)) {
+            $_SESSION['error'] = "Error al registrar el usuario.";
+            header("Location:../view/register.php");
+            exit;
+        }
+        mysqli_stmt_close($sentencia1); 
+    } else {
+        $_SESSION['error'] = "Error en la consulta."; 
+        header("Location:../view/register.php");
+        exit;
+    }
+
+    // Registro bien hecho
+    unset($_SESSION['error']);
+    $_SESSION['register'] = "check";
+    header("Location:../index.php");
 } else {
-    header("Location: ../view/register.php?error=2"); // Error: Campos incompletos
+    $_SESSION['error'] = "Solicitud no válida.";
+    header("Location:../view/register.php");
 }
+
+// Close connection
+mysqli_close($conn);
+
 ?>

@@ -7,42 +7,52 @@ session_start(); // Ensure session is started to access error messages
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="stylesheet" href="../styles/register_styles.css">
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <script src="../js/script_register.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
 </head>
-<body>
-    <form method="post" action="../processes/insert_register.php">
-        <div class="mb-3">
-            <h2 class="form-label">Registro</h2><br>
-        </div>
+<body>    
+    <div class="form-container2">
+        <h3>
+            <a href="../index.php" class="btn">Volver al inicio</a>
+        </h3>
+    <h1 class="form-title">Registro</h1>
 
-        <div class="mb-3">
-            <label for="email">Email:</label>
-            <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" onblur="validarEmail()"><br>
-            <p id="error_email"></p>
-        </div>
+        <div class="form-content">
+            <form method="post" action="../processes/insert_register.php" onsubmit="return ValidarFormularioRegistro()">
 
-        <div class="mb-3">
-            <label for="usuario" class="form-label">Usuario:</label>
-            <input class="form-control" id="usuario" name="usuario" onblur="validarUsuario()"><br>
-            <p id="error_usuario"></p>
-        </div>
+            <label for="email" class="subtitulos">Email:</label>
+            <input name="email" type="email" id="email" onblur="validarEmail()" class="camposrellenar" required>
+            <p id="error_email" class="mensaje-error"></p>
 
-        <div class="mb-3">
-            <label for="password" class="form-label">Contraseña:</label>
-            <input type="password" class="form-control" id="password" name="password" onblur="validarPassword()"><br>
-            <p id="error_password"></p>
-        </div>
+            <label for="usuario" class="subtitulos">Usuario:</label>
+            <input id="usuario" name="usuario" onblur="validarUsuario()" class="camposrellenar" required>
+            <p id="error_usuario" class="mensaje-error"></p>
 
-        <div class="mb-3">
-            <label for="confirm_password" class="form-label">Confirmar Contraseña:</label>
-            <input type="password" class="form-control" id="confirm_password" name="confirm_password" onblur="return validarConfirmPassword()"><br>
-            <p id="error_confirm_password"></p>
-        </div>
+            <label for="telefono" class="subtitulos">Teléfono:</label>
+            <input name="telefono" type="tel" id="telefono" onblur="validarTelefono()" class="camposrellenar" required>
+            <p id="error_telefono" class="mensaje-error"></p>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <br><br><a href="login.php">Login</a>
-    </form>
+            <label for="direccion" class="subtitulos">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" onblur="validarDireccion()" class="camposrellenar" required>
+            <p id="error_direccion" class="mensaje-error"></p>
+
+            <label for="password" class="subtitulos">Contraseña:</label>
+            <input type="password" id="password" name="password" onblur="validarPassword()" class="camposrellenar" required>
+            <p id="error_password" class="mensaje-error"></p>
+
+            <label for="confirm_password" class="subtitulos">Confirmar Contraseña:</label>
+            <input type="password" id="confirm_password" name="confirm_password" onblur="validarConfirmPassword()" class="camposrellenar" required>
+            <p id="error_confirm_password" class="mensaje-error"></p>
+
+            <input class="btn" type="submit" value="Registrarse">
+            <a href="./login.php" class="registrarse">¿Ya tienes cuenta? Inicia sesión aquí!</a>
+
+            </form>
+        </div>
+    </div>
+    <div class="logo-background"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

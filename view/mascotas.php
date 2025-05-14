@@ -37,7 +37,8 @@
       </li>
     </div>
   </ul>
-
+  <a href="./formulario_mascota.php" class="btn btn-primary">Registra tu mascota!</a>
+  
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

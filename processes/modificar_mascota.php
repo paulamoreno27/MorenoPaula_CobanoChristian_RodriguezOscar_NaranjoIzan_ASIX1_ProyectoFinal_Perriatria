@@ -4,7 +4,7 @@ session_start();
 
 // Verificar si se ha recibido un ID válido
 if (!isset($_GET['id'])) {
-    echo "ID de Mascota no válido.";
+    echo "Chip de la Mascota no válido.";
     exit();
 }
 

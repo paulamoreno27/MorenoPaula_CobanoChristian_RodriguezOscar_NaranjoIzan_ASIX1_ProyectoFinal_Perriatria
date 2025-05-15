@@ -14,16 +14,33 @@ session_start();
 <body>
     
     <div class="form-container">
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?php 
+                echo $_SESSION['error']; 
+                unset($_SESSION['error']); // Limpiar el mensaje después de mostrarlo
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?php 
+                echo $_SESSION['success']; 
+                unset($_SESSION['success']); // Limpiar el mensaje después de mostrarlo
+                ?>
+            </div>
+        <?php endif; ?>
         <h3>
             <a href="../index.php" class="btn">Volver al inicio</a>
         </h3>
         <h1 class="form-title">Login</h1>
     
         <div class="form-content">
-            <form action="../processes/validate_register.php" method="POST" onsubmit="return ValidarFormulario()">
+            <form action="../processes/login.proc.php" method="POST">
 
             <label for="nombre" class="subtitulos">Usuario:</label>
-            <input type="text" id="nombre" name="usuario" onblur="valUsuario()" class="camposrellenar" required>
+            <input type="text" id="usuario" name="usuario" onblur="valUsuario()" class="camposrellenar" required>
             <p id="nombreError" class="mensaje-error"></p>
 
             <label for="email" class="subtitulos">Email:</label>

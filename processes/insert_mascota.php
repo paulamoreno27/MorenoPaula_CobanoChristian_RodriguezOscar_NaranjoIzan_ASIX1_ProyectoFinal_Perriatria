@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Insertar mascota
     $fecha_registro = date('Y-m-d H:i:s');
-    $sql_insert = "INSERT INTO mascota (nombre, fecha_nacimiento, sexo, especie, raza, usuario_id, fecha_registro)
+    $sql_insert = "INSERT INTO mascota (nombre_mascota, fecha_nacimiento_mascota, sexo_mascota, especie_mascota)
                    VALUES ('$nombre', '$fecha_nacimiento', '$sexo', '$especie', '$raza', $usuario_id, '$fecha_registro')";
 
     if (mysqli_query($conn, $sql_insert)) {

@@ -14,6 +14,23 @@ session_start();
 <body>
     
     <div class="form-container">
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?php 
+                echo $_SESSION['error']; 
+                unset($_SESSION['error']); // Limpiar el mensaje después de mostrarlo
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?php 
+                echo $_SESSION['success']; 
+                unset($_SESSION['success']); // Limpiar el mensaje después de mostrarlo
+                ?>
+            </div>
+        <?php endif; ?>
         <h3>
             <a href="../index.php" class="btn">Volver al inicio</a>
         </h3>

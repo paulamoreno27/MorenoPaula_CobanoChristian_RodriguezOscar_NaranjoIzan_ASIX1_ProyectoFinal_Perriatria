@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $contrasena = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $confirmContrasena = password_hash($_POST['confirm_password'], PASSWORD_DEFAULT);
 
-    $sql = "SELECT * FROM usuarios";
+    $sql = "SELECT * FROM propietario";
     $result = mysqli_query($conn, $sql);
 
     foreach ($result as $usuario) {
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sentencia1 = mysqli_prepare($conn, $query1);
 
     if ($sentencia1) {
-        mysqli_stmt_bind_param($sentencia1, "sisss", $nombre, $telefono, $email, $contrasena, $direccion);
+        mysqli_stmt_bind_param($sentencia1, "sisss", $nombre, $telefono,$direccion, $email, $contrasena);
 
         if (!mysqli_stmt_execute($sentencia1)) {
             $_SESSION['error'] = "Error al registrar el usuario.";
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Registro bien hecho
     unset($_SESSION['error']);
     $_SESSION['register'] = "check";
-    header("Location:../index.php");
+    header("Location:../index.php?usuario=$nombre");
 } else {
     $_SESSION['error'] = "Solicitud no válida.";
     header("Location:../view/register.php");

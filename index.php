@@ -1,3 +1,7 @@
+<?php
+session_start();
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,6 +21,10 @@
   <header class="text-center">
     <h1>Perriatria</h1>
   </header>
+    <div class="user-info">
+      <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']);?></span>
+      <a class="logout" href="./logout.php">Log out</a>
+    </div>
 
   <ul class="nav nav-tabs custom-navbar w-100">
     <div class="nav-left">

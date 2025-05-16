@@ -9,7 +9,7 @@ session_start();
     <title>Registrar Mascota</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
-    <script src="../js/script_mascota.js"></script> <!-- Archivo JS para validaciones -->
+    <script src="../js/script_mascotas.js"></script> <!-- Archivo JS para validaciones -->
 </head>
 <body>
     
@@ -37,30 +37,30 @@ session_start();
         <h1 class="form-title">Registrar Mascota</h1>
     
         <div class="form-content">
-            <form action="../processes/insert_mascota.php" method="POST" onsubmit="return ValidarFormulario()">
+            <form action="../processes/insert_mascota.php" method="POST">
 
             <label for="nombre" class="subtitulos">Nombre de la mascota:</label>
-            <input type="text" id="nombre" name="nombre" onblur="valNombre()" class="camposrellenar" required>
+            <input type="text" id="nombre" name="nombre" onblur="valNombreMascota()" class="camposrellenar" required>
             <p id="nombreError" class="mensaje-error"></p>
 
             <label for="fecha_nacimiento" class="subtitulos">Fecha de nacimiento:</label>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="camposrellenar" required>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" onblur="valNacimientoMascota()" class="camposrellenar" required>
             <p id="fechaNacimientoError" class="mensaje-error"></p>
 
             <label for="sexo" class="subtitulos">Sexo:</label>
-            <select id="sexo" name="sexo" class="camposrellenar" required>
+            <select id="sexo" name="sexo" onblur="valSexoMascota()" class="camposrellenar" required>
                 <option value="">Seleccione</option>
-                <option value="Macho">Macho</option>
-                <option value="Hembra">Hembra</option>
+                <option value="M">Macho</option>
+                <option value="F">Hembra</option>
             </select>
             <p id="sexoError" class="mensaje-error"></p>
 
             <label for="especie" class="subtitulos">Especie:</label>
-            <input type="text" id="especie" name="especie" onblur="valEspecie()" class="camposrellenar" required>
+            <input type="text" id="especie" name="especie" onblur="valEspecieMascota()" class="camposrellenar" required>
             <p id="especieError" class="mensaje-error"></p>
 
             <label for="raza" class="subtitulos">Raza:</label>
-            <input type="text" id="raza" name="raza" onblur="valRaza()" class="camposrellenar" required>
+            <input type="text" id="raza" name="raza" onblur="valRazaMascota()" class="camposrellenar" required>
             <p id="razaError" class="mensaje-error"></p>
 
             <input class="btn" type="submit" value="Registrar">
@@ -71,4 +71,7 @@ session_start();
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<footer class="footer">
+  <p>&copy; 2023 Perriatria Veterinario. Todos los derechos reservados.</p>
+</footer>
 </html>

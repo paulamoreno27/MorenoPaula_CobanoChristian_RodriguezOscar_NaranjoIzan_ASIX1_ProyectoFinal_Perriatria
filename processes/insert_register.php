@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sentencia1 = mysqli_prepare($conn, $query1);
 
     if ($sentencia1) {
-        mysqli_stmt_bind_param($sentencia1, "sisss", $nombre, $telefono,$direccion, $email, $contrasena);
+        mysqli_stmt_bind_param($sentencia1, "sisss", $nombre, $telefono, $direccion, $email, $contrasena);
 
         if (!mysqli_stmt_execute($sentencia1)) {
             $_SESSION['error'] = "Error al registrar el usuario.";

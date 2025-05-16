@@ -1,8 +1,8 @@
 /* Fuente general */
 body {
   font-family: 'Tuffy', sans-serif;
-  background-color: #f8f9fa; /* gris claro para fondo general */
-  color: #6ecd8a; /* azul oscuro sobrio para texto */
+  background-color: #f8f9fa;
+  color: #6ecd8a; 
   margin: 0;
   padding: 0;
 }
@@ -141,6 +141,7 @@ Login */
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1rem;
+  text-decoration: none;
 }
 
 .btn:hover {
@@ -173,3 +174,121 @@ Login */
   z-index: 0;
   pointer-events: none;
 }
+.footer 
+{
+    background-color: #6ecd8a;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 14px;
+    margin-top: 40px;
+}
+/*----------------------------------------------------------------------------------------------------------*/
+/* Estilos Info página */
+.seccion {
+    background-color: #eafaf1;
+    padding: 40px 20px;
+    margin-top: 30px;
+    border-radius: 12px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.seccion-titulo {
+    text-align: center;
+    color: #4b9476;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.lista-servicios {
+    list-style: none;
+    padding-left: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.lista-servicios li {
+    padding: 8px 0;
+    border-bottom: 1px solid #cce8d7;
+}
+
+.contacto-info p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* Estilos Log-out + Bienvenida */
+.user-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #7ed6a3;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.user-panel span {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.user-panel form {
+    margin: 0;
+}
+
+.user-panel button {
+    background-color: white;
+    color: #7ed6a3;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-panel button:hover {
+    background-color: #dfffe9;
+}/*---------------------------------------------------------------------------------------------------------------------------*/
+/* Estilos del botón vuelta a Inicio */
+
+.scroll-top-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #7ed6a3;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.scroll-top-panel button {
+    background-color: white;
+    color: #7ed6a3;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.scroll-top-panel button:hover {
+    background-color: #dfffe9;
+}
+

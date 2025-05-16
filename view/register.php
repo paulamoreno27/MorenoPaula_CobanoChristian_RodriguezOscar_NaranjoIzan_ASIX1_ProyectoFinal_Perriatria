@@ -55,4 +55,7 @@ session_start(); // Ensure session is started to access error messages
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<footer class="footer">
+  <p>&copy; 2023 Perriatria Veterinario. Todos los derechos reservados.</p>
+</footer>
 </html>

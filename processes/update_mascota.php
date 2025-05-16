@@ -25,11 +25,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['chip'], $_POST['nombre
         exit();
     }
 
-    // Actualizar mascota solo si pertenece al propietario logueado
-    $sql = "UPDATE mascota SET nombre_mascota = ?, fecha_nacimiento_mascota = ?, sexo_mascota = ?, especie_mascota = ?, raza_mascota = ? 
-            WHERE chip_mascota = ? AND id_propietario = ?";
-    $stmt_update = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt_update, "sssssii", $nombre, $fecha_nacimiento, $sexo, $especie, $raza, $chip, $id_propietario);
+    // Procesar la foto si se subió
+    $foto_nombre = null;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $foto_tmp = $_FILES['foto']['tmp_name'];
+        $foto_ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+        $foto_nombre = uniqid('mascota_') . '.' . $foto_ext;
+        $destino = '../resources/' . $foto_nombre;
+
+        if (!is_dir('../resources')) {
+            mkdir('../resources', 0755, true);
+        }
+
+        if (!move_uploaded_file($foto_tmp, $destino)) {
+            echo "<p>Error al subir la imagen.</p>";
+            exit();
+        }
+    }
+
+    if ($foto_nombre) {
+        // Actualizar incluyendo la foto
+        $sql = "UPDATE mascota SET nombre_mascota = ?, fecha_nacimiento_mascota = ?, sexo_mascota = ?, especie_mascota = ?, raza_mascota = ?, foto_mascota = ? WHERE chip_mascota = ? AND id_propietario = ?";
+        $stmt_update = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt_update, "ssssssii", $nombre, $fecha_nacimiento, $sexo, $especie, $raza, $foto_nombre, $chip, $id_propietario);
+    } else {
+        // Actualizar sin cambiar la foto
+        $sql = "UPDATE mascota SET nombre_mascota = ?, fecha_nacimiento_mascota = ?, sexo_mascota = ?, especie_mascota = ?, raza_mascota = ? WHERE chip_mascota = ? AND id_propietario = ?";
+        $stmt_update = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt_update, "ssss sii", $nombre, $fecha_nacimiento, $sexo, $especie, $raza, $chip, $id_propietario);
+    }
+
     $resultado_update = mysqli_stmt_execute($stmt_update);
     mysqli_stmt_close($stmt_update);
 

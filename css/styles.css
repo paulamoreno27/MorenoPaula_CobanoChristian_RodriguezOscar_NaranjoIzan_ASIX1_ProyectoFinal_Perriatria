@@ -22,6 +22,7 @@ header h1 {
   margin: 0;
 }
 
+
 /* Navegación */
 .nav-tabs {
   background-color: #ffffff; /* tono claro para pestañas */
@@ -171,7 +172,7 @@ Login */
   background-size: 600px auto;
   width: 600px;
   height: 600px;
-  z-index: 0;
+  z-index: -10;
   pointer-events: none;
 }
 .footer 
@@ -186,7 +187,7 @@ Login */
 /*----------------------------------------------------------------------------------------------------------*/
 /* Estilos Info página */
 .seccion {
-    background-color: #eafaf1;
+    background-color: #ebf4ef;
     padding: 40px 20px;
     margin-top: 30px;
     border-radius: 12px;
@@ -203,22 +204,69 @@ Login */
     margin-bottom: 20px;
 }
 
-.lista-servicios {
-    list-style: none;
-    padding-left: 0;
-    font-size: 16px;
-    color: #333;
+/* Sección Quiénes Somos */
+.quienes-somos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
-.lista-servicios li {
-    padding: 8px 0;
-    border-bottom: 1px solid #cce8d7;
+.quienes-texto {
+    flex: 1 1 60%;
+    min-width: 280px;
+}
+
+.quienes-img {
+    flex: 1 1 35%;
+    max-width: 450px;
+}
+
+/* Imagen común */
+.vet-img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Secciones Servicios y Contacto con el mismo formato */
+.servicios,
+.contacto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.servicios-texto,
+.contacto-texto {
+    flex: 1 1 60%;
+    min-width: 280px;
+}
+
+.servicios-img{
+    flex: 1 1 35%;
+    max-width: 450px;
+}
+
+.contacto-texto {
+  text-align: center;
 }
 
 .contacto-info p {
-    font-size: 16px;
-    color: #333;
-    margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.contacto-mapa {
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 

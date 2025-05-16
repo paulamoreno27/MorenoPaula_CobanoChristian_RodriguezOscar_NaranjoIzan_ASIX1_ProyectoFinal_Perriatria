@@ -37,7 +37,7 @@ session_start();
         <h1 class="form-title">Registrar Mascota</h1>
     
         <div class="form-content">
-            <form action="../processes/insert_mascota.php" method="POST">
+            <form action="../processes/insert_mascota.php" method="POST"  enctype="multipart/form-data">
 
             <label for="nombre" class="subtitulos">Nombre de la mascota:</label>
             <input type="text" id="nombre" name="nombre" onblur="valNombreMascota()" class="camposrellenar" required>
@@ -62,6 +62,10 @@ session_start();
             <label for="raza" class="subtitulos">Raza:</label>
             <input type="text" id="raza" name="raza" onblur="valRazaMascota()" class="camposrellenar" required>
             <p id="razaError" class="mensaje-error"></p>
+
+            <label for="foto" class="subtitulos">Foto de tu mascota:</label>
+            <input type="file" id="foto" name="foto" accept="image/*" class="camposrellenar">
+            <p id="fotoError" class="mensaje-error"></p>
 
             <input class="btn" type="submit" value="Registrar">
             </form>

@@ -22,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $especie = trim($_POST['especie'] ?? '');
     $raza = trim($_POST['raza'] ?? '');
 
-    // Validaciones básicas
     if (empty($nombre) || empty($fecha_nacimiento) || empty($sexo) || empty($especie) || empty($raza)) {
         $_SESSION['error'] = "Todos los campos son obligatorios.";
         header("Location: ../view/mascotas.php");
@@ -35,20 +34,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
+    // Procesar la foto si se subió
+    $foto_nombre = null;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $foto_tmp = $_FILES['foto']['tmp_name'];
+        $foto_ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+        $foto_nombre = uniqid('mascota_') . '.' . $foto_ext;
+        $destino = '../resources/' . $foto_nombre;
+
+        if (!is_dir('../resources')) {
+            mkdir('../resources', 0755, true);
+        }
+
+        if (!move_uploaded_file($foto_tmp, $destino)) {
+            $_SESSION['error'] = "Error al subir la imagen.";
+            header("Location: ../view/mascotas.php");
+            exit();
+        }
+    }
+
     // Verificar si ya existe una mascota con ese nombre para este propietario
     $sql_check = "SELECT chip_mascota FROM mascota WHERE nombre_mascota = ? AND id_propietario = ?";
     $stmt_check = mysqli_prepare($conn, $sql_check);
-
     if (!$stmt_check) {
         $_SESSION['error'] = "Error al preparar la verificación.";
         header("Location: ../view/mascotas.php");
         exit();
     }
-
     mysqli_stmt_bind_param($stmt_check, "si", $nombre, $id_propietario);
     mysqli_stmt_execute($stmt_check);
     mysqli_stmt_store_result($stmt_check);
-
     if (mysqli_stmt_num_rows($stmt_check) > 0) {
         $_SESSION['error'] = "Ya has registrado una mascota con ese nombre.";
         mysqli_stmt_close($stmt_check);
@@ -57,11 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     mysqli_stmt_close($stmt_check);
 
-    // Insertar mascota
     $fecha_registro = date('Y-m-d H:i:s');
-    $sql_insert = "INSERT INTO mascota (nombre_mascota, fecha_nacimiento_mascota, sexo_mascota, especie_mascota, raza_mascota, fecha_registro_mascota, id_propietario)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+    $sql_insert = "INSERT INTO mascota (nombre_mascota, fecha_nacimiento_mascota, sexo_mascota, especie_mascota, raza_mascota, fecha_registro_mascota, id_propietario, foto_mascota)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = mysqli_prepare($conn, $sql_insert);
 
     if (!$stmt_insert) {
@@ -70,12 +84,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt_insert, "ssssssi", $nombre, $fecha_nacimiento, $sexo, $especie, $raza, $fecha_registro, $id_propietario);
+    mysqli_stmt_bind_param($stmt_insert, "ssssssis", $nombre, $fecha_nacimiento, $sexo, $especie, $raza, $fecha_registro, $id_propietario, $foto_nombre);
 
     if (mysqli_stmt_execute($stmt_insert)) {
         $_SESSION['success'] = "Mascota registrada exitosamente.";
     } else {
         $_SESSION['error'] = "Error al registrar la mascota: " . mysqli_stmt_error($stmt_insert);
+        // Eliminar foto si hubo error
+        if ($foto_nombre && file_exists($destino)) {
+            unlink($destino);
+        }
     }
 
     mysqli_stmt_close($stmt_insert);

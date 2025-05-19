@@ -19,6 +19,9 @@ session_start();
 </head>
 <header class="text-center">
     <h1>Perriatria</h1>
+    <div>
+      <img src="./resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
+    </div>
 </header>
 <body>
   <ul class="nav nav-tabs custom-navbar w-100">

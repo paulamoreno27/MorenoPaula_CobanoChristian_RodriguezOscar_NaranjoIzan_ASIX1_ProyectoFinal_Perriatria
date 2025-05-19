@@ -23,12 +23,15 @@ $id_propietario = $_SESSION['id_propietario'];
     <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <title>Mascotas</title>
+    <title>Veterinarios</title>
 </head>
-  <body>
-    <header class="text-center">
-      <h1>Veterinarios</h1>
-    </header>
+<header class="text-center">
+  <h1>Veterinarios</h1>
+    <div>
+    <img src="../resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
+  </div>
+</header>
+<body>
 
     <ul class="nav nav-tabs custom-navbar w-100">
       <div class="nav-left">
@@ -37,6 +40,9 @@ $id_propietario = $_SESSION['id_propietario'];
         </li>
         <li class="nav-item">
           <a class="nav-link" href="./mascotas.php">Mascotas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./veterinarios.php">Veterinarios</a>
         </li>
       </div>
       <div class="nav-right">
@@ -71,7 +77,7 @@ $id_propietario = $_SESSION['id_propietario'];
 
      <main>
     <section>
-      <a href="./formulario_mascota.php" class="btn btn-primary mb-3">Registra veterinario</a>
+      <a href="./formulario_veterinario.php" class="btn btn-primary mb-3">Registra veterinario</a>
       <h2 class="titulo-verde">Veterinarios registrados:</h2>
 
       <div class="table-responsive">
@@ -82,13 +88,14 @@ $id_propietario = $_SESSION['id_propietario'];
               <th>Apellidos</th>
               <th>Teléfono</th>
               <th>Email</th>
+              <th>Salario</th>
               <th>Especialidad</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <?php
-            $sql = "SELECT id_veterinario, nombre_veterinario, apellidos_veterinario, telefono_veterinario, email_veterinario, especialidad_veterinario FROM veterinario";
+            $sql = "SELECT id_veterinario, nombre_veterinario, apellidos_veterinario, telefono_veterinario, email_veterinario, salario_veterinario, especialidad_veterinario FROM veterinario";
             $result = mysqli_query($conn, $sql);
 
             if ($result && mysqli_num_rows($result) > 0) {
@@ -99,6 +106,7 @@ $id_propietario = $_SESSION['id_propietario'];
               <td><?php echo htmlspecialchars($vet['apellidos_veterinario']); ?></td>
               <td><?php echo htmlspecialchars($vet['telefono_veterinario']); ?></td>
               <td><?php echo htmlspecialchars($vet['email_veterinario']); ?></td>
+              <td><?php echo htmlspecialchars($vet['salario_veterinario']); ?></td>
               <td><?php echo htmlspecialchars($vet['especialidad_veterinario']); ?></td>
               <td>
                 <!-- Acciones como editar o borrar, si tienes scripts para ello -->

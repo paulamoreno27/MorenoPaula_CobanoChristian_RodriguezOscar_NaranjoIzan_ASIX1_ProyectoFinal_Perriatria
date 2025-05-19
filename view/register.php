@@ -16,6 +16,9 @@ session_start(); // Ensure session is started to access error messages
         <h3>
             <a href="../index.php" class="btn">Volver al inicio</a>
         </h3>
+    <div>
+        <img src="../resources/logo_perriatria.png" alt="Logo Perriatria" class="logo-form">
+    </div>
     <h1 class="form-title">Registro</h1>
 
         <div class="form-content">

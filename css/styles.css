@@ -9,10 +9,18 @@ body {
 
 /* Encabezado principal */
 header {
-  background-color: #6ecd8a; /* azul marino */
+  position: relative;
+  background-color: #6ecd8a;
   color: white;
   padding: 1.5rem 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.logo-header{
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 75px; 
 }
 
 header h1 {
@@ -107,6 +115,13 @@ Login */
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.logo-form{
+  position: absolute;
+  right: 400px;
+  top: 11.5%;
+  transform: translateY(-50%);
+  height: 75px; 
 }
 
 .form-title {

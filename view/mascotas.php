@@ -41,18 +41,24 @@ $result = mysqli_query($conn, $sql);
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="icon" href="./resources/logo_perriatria.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
   <title>Mascotas</title>
 </head>
-<body>
-  <header class="text-center">
+<header class="text-center">
     <h1>Mascotas</h1>
-  </header>
-
+    <div>
+      <img src="../resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
+    </div>
+</header>
+<body>
+ 
   <ul class="nav nav-tabs custom-navbar w-100">
     <div class="nav-left">
       <li class="nav-item"><a class="nav-link active" href="../index.php">Inicio</a></li>
       <li class="nav-item"><a class="nav-link" href="./mascotas.php">Mascotas</a></li>
+      <li class="nav-item"><a class="nav-link" href="./veterinarios.php">Veterinarios</a></li>
     </div>
     <div class="nav-right">
       <li class="nav-item"><a class="nav-link" href="./login.php">Iniciar sesión</a></li>

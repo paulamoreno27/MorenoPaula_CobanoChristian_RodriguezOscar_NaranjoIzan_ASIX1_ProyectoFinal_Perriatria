@@ -101,4 +101,13 @@ function valEspecieMascota()
         document.getElementById("especie").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
         limpiarError("especieError");
     }
+}function valveterinario() {
+    let veterinario = document.getElementById("veterinario").value;
+    if (veterinario.length < 3) {
+        mostrarError("veterinarioError", "El nombre del veterinario debe tener al menos 3 caracteres.");
+        document.getElementById("veterinario").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
+    } else {
+        document.getElementById("veterinario").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("veterinarioError");
+    }
 }

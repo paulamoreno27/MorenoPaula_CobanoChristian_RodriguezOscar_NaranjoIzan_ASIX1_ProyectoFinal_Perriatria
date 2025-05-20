@@ -8,12 +8,12 @@ if (!isset($_SESSION['id_propietario'])) {
     exit();
 }
 
-//  if (!isset($_GET['id_veterinario']) || !is_numeric($_GET['id_veterinario'])) {
-//     echo "ID de veterinario no válido.";
-//   exit();
-// }
+if (!isset($_GET['id_veterinario']) || !is_numeric($_GET['id_veterinario'])) {
+    echo "ID de veterinario no válido.";
+  exit();
+}
 
-$id_veterinario = intval($_GET['id']);
+$id_veterinario = intval($_GET['id_veterinario']);
 
 
 $sql = "SELECT * FROM veterinario WHERE id_veterinario = ?";

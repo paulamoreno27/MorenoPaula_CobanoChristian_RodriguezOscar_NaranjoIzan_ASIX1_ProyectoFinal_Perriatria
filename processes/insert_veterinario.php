@@ -22,8 +22,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $especialidad = trim($_POST['especialidad_veterinario'] ?? '');
     $salario = floatval($_POST['salario_veterinario'] ?? 0);
 
-    if (empty($nombre) || empty($apellidos) || empty($email) || empty($telefono) || $salario <= 0) {
+    // Validación PHP
+    if (empty($nombre) || empty($apellidos) || empty($email) || empty($telefono) || empty($especialidad) || $salario <= 0) {
         $_SESSION['error'] = "Todos los campos son obligatorios y el salario debe ser mayor que 0.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+    if (strlen($nombre) < 3) {
+        $_SESSION['error'] = "El nombre debe tener al menos 3 caracteres.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+    if (strlen($apellidos) < 3) {
+        $_SESSION['error'] = "Los apellidos deben tener al menos 3 caracteres.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = "El email no es válido.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+    if (strlen($telefono) != 9 || !is_numeric($telefono)) {
+        $_SESSION['error'] = "El teléfono debe tener exactamente 9 dígitos numéricos.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+    if (strlen($especialidad) < 3) {
+        $_SESSION['error'] = "La especialidad debe tener al menos 3 caracteres.";
         header("Location: ../view/formulario_veterinario.php");
         exit();
     }

@@ -13,6 +13,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $contrasena = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $confirmContrasena = password_hash($_POST['confirm_password'], PASSWORD_DEFAULT);
 
+    // Validación PHP
+    if (empty($nombre) || empty($email) || empty($telefono) || empty($direccion) || empty($_POST['password']) || empty($_POST['confirm_password'])) {
+        $_SESSION['error'] = "Todos los campos son obligatorios.";
+        header("Location:../view/register.php");
+        exit;
+    }
+    if (strlen($nombre) < 3) {
+        $_SESSION['error'] = "El nombre debe tener al menos 3 caracteres.";
+        header("Location:../view/register.php");
+        exit;
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = "El email no es válido.";
+        header("Location:../view/register.php");
+        exit;
+    }
+    if (strlen($telefono) != 9 || !is_numeric($telefono)) {
+        $_SESSION['error'] = "El teléfono debe tener exactamente 9 dígitos numéricos.";
+        header("Location:../view/register.php");
+        exit;
+    }
+    if (strlen($direccion) < 5) {
+        $_SESSION['error'] = "La dirección debe tener al menos 5 caracteres.";
+        header("Location:../view/register.php");
+        exit;
+    }
+    if (strlen($_POST['password']) < 6) {
+        $_SESSION['error'] = "La contraseña debe tener al menos 6 caracteres.";
+        header("Location:../view/register.php");
+        exit;
+    }
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+        $_SESSION['error'] = "Las contraseñas no coinciden.";
+        header("Location:../view/register.php");
+        exit;
+    }
+
     $sql = "SELECT * FROM propietario";
     $result = mysqli_query($conn, $sql);
 

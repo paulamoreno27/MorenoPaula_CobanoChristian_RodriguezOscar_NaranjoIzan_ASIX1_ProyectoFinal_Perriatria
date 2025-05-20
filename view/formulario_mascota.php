@@ -1,5 +1,21 @@
 <?php
 session_start();
+include '../services/connection.php'; // Conexión a la base de datos
+
+// Verificar si se está editando una mascota
+$mascota = null;
+if (isset($_GET['chip'])) {
+    $chip = mysqli_real_escape_string($conn, $_GET['chip']);
+    $sql_mascota = "SELECT * FROM mascota WHERE chip_mascota = '$chip'";
+    $result_mascota = mysqli_query($conn, $sql_mascota);
+
+    if ($result_mascota && mysqli_num_rows($result_mascota) > 0) {
+        $mascota = mysqli_fetch_assoc($result_mascota);
+    } else {
+        echo "<p>Error: No se encontró la mascota con el chip proporcionado.</p>";
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -63,6 +79,23 @@ session_start();
             <input type="text" id="raza" name="raza" onblur="valRazaMascota()" class="camposrellenar" required>
             <p id="razaError" class="mensaje-error"></p>
 
+
+             
+            
+        <label for="veterinario" class="subtitulos">Veterinario asignado:</label>
+        <select id="veterinario" name="veterinario" class="camposrellenar" required>
+            <option value="">Seleccione un veterinario</option>
+            <?php
+            $result = mysqli_query($conn, "SELECT id_veterinario, nombre_veterinario FROM veterinario");
+
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<option value="' . $row['id_veterinario'] . '">' . htmlspecialchars($row['nombre_veterinario']) . '</option>';
+            }
+            ?>
+        </select>
+        <p id="veterinarioError" class="mensaje-error"></p>
+
+            
             <label for="foto" class="subtitulos">Foto de tu mascota:</label>
             <input type="file" id="foto" name="foto" accept="image/*" class="camposrellenar">
             <p id="fotoError" class="mensaje-error"></p>

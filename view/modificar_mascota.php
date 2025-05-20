@@ -127,6 +127,35 @@ mysqli_stmt_close($stmt);
         <?php endif; ?>
       </div>
 
+      <div class="mb-3">
+        <label for="veterinario" class="form-label fw-bold">Veterinario:</label>
+        <select 
+            id="veterinario" 
+            name="veterinario" 
+            class="form-select" 
+            required 
+            onblur="valVeterinario()">
+            <option value="">Seleccione un veterinario</option>
+            <?php
+            // Consulta para obtener los veterinarios
+            $sql_veterinarios = "SELECT id_veterinario, nombre_veterinario FROM veterinario";
+            $result_veterinarios = mysqli_query($conn, $sql_veterinarios);
+
+            if ($result_veterinarios && mysqli_num_rows($result_veterinarios) > 0):
+                while ($veterinario = mysqli_fetch_assoc($result_veterinarios)):
+            ?>
+                <option value="<?php echo htmlspecialchars($veterinario['nombre_veterinario']); ?>" 
+                    <?php if ($mascota['id_veterinario_mascota'] == $veterinario['id_veterinario']) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($veterinario['nombre_veterinario']); ?>
+                </option>
+            <?php
+                endwhile;
+            endif;
+            ?>
+        </select>
+        <p id="veterinarioError" class="mensaje-error"></p>
+      </div>
+
       <button type="submit" class="btn btn-success w-100">Guardar cambios</button>
     </form>
   </div>

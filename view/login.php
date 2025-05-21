@@ -9,16 +9,18 @@ session_start();
     <title>Login</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
-    <script src="../js/script_login.js"></script> <!-- Archivo JS para validaciones -->
+    <script src="../js/script_login.js"></script> 
 </head>
 <body>
-    
+    <div>
+        <img src="../resources/logo_perriatria.png" alt="Logo Perriatria" class="logo-form-login">
+    </div>
     <div class="form-container">
         <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger">
                 <?php 
                 echo $_SESSION['error']; 
-                unset($_SESSION['error']); // Limpiar el mensaje después de mostrarlo
+                unset($_SESSION['error']); // Esto limpia el mensaje después de mostrarlo
                 ?>
             </div>
         <?php endif; ?>
@@ -28,7 +30,7 @@ session_start();
             <div class="alert alert-success">
                 <?php 
                 echo $_SESSION['success']; 
-                unset($_SESSION['success']); // Limpiar el mensaje después de mostrarlo
+                unset($_SESSION['success']); 
                 ?>
             </div>
         <?php endif; ?>

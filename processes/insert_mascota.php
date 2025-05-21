@@ -10,45 +10,27 @@ if (!$id_propietario) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (!isset($conn)) {
-        $_SESSION['error'] = "Error de conexión con la base de datos.";
-        header("Location: ../view/mascotas.php");
-        exit();
-    }
-
     $nombre = trim($_POST['nombre'] ?? '');
     $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? '';
     $sexo = $_POST['sexo'] ?? '';
-    $especie = trim($_POST['especie'] ?? '');
-    $raza = trim($_POST['raza'] ?? '');
-    $veterinario = (int)($_POST['veterinario'] ?? 0);
+    $id_especie = (int)($_POST['id_especie_mascota'] ?? 0);
+    $id_raza = (int)($_POST['id_raza_mascota'] ?? 0);
+    $id_veterinario = (int)($_POST['veterinario'] ?? 0);
 
-    // Validación
-    if (empty($nombre) || empty($fecha_nacimiento) || empty($sexo) || empty($especie) || empty($raza) || !$veterinario) {
+    // Validaciones
+    if (!$nombre || !$fecha_nacimiento || !$sexo || !$id_especie || !$id_raza || !$id_veterinario) {
         $_SESSION['error'] = "Todos los campos son obligatorios.";
-        header("Location: ../view/mascotas.php");
-        exit();
-    }
-
-    if (strlen($nombre) < 3) {
-        $_SESSION['error'] = "El nombre debe tener al menos 3 caracteres.";
-        header("Location: ../view/mascotas.php");
+        header("Location: ../view/formulario_mascota.php");
         exit();
     }
 
     if (!in_array($sexo, ['M', 'F'])) {
         $_SESSION['error'] = "El sexo debe ser 'M' o 'F'.";
-        header("Location: ../view/mascotas.php");
+        header("Location: ../view/formulario_mascota.php");
         exit();
     }
 
-    if (strlen($especie) < 3 || strlen($raza) < 3) {
-        $_SESSION['error'] = "La especie y la raza deben tener al menos 3 caracteres.";
-        header("Location: ../view/mascotas.php");
-        exit();
-    }
-
-    // Procesar foto
+    // Foto
     $foto_nombre = null;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $foto_tmp = $_FILES['foto']['tmp_name'];
@@ -56,82 +38,62 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $foto_nombre = uniqid('mascota_') . '.' . $foto_ext;
         $destino = '../resources/' . $foto_nombre;
 
-        if (!is_dir('../resources')) {
-            mkdir('../resources', 0755, true);
-        }
-
         if (!move_uploaded_file($foto_tmp, $destino)) {
             $_SESSION['error'] = "Error al subir la imagen.";
-            header("Location: ../view/mascotas.php");
+            header("Location: ../view/formulario_mascota.php");
             exit();
         }
     }
 
-    // Comprobar duplicado
-    $sql_check = "SELECT chip_mascota FROM mascota WHERE nombre_mascota = ? AND id_propietario = ?";
-    $stmt_check = mysqli_prepare($conn, $sql_check);
-    if (!$stmt_check) {
-        $_SESSION['error'] = "Error al preparar la verificación.";
-        header("Location: ../view/mascotas.php");
+    // Evitar duplicados por nombre
+    $check_sql = "SELECT chip_mascota FROM mascota WHERE nombre_mascota = ? AND id_propietario = ?";
+    $check_stmt = mysqli_prepare($conn, $check_sql);
+    mysqli_stmt_bind_param($check_stmt, "si", $nombre, $id_propietario);
+    mysqli_stmt_execute($check_stmt);
+    mysqli_stmt_store_result($check_stmt);
+    if (mysqli_stmt_num_rows($check_stmt) > 0) {
+        $_SESSION['error'] = "Ya tienes una mascota registrada con ese nombre.";
+        mysqli_stmt_close($check_stmt);
+        header("Location: ../view/formulario_mascota.php");
         exit();
     }
-
-    mysqli_stmt_bind_param($stmt_check, "si", $nombre, $id_propietario);
-    mysqli_stmt_execute($stmt_check);
-    mysqli_stmt_store_result($stmt_check);
-    if (mysqli_stmt_num_rows($stmt_check) > 0) {
-        $_SESSION['error'] = "Ya has registrado una mascota con ese nombre.";
-        mysqli_stmt_close($stmt_check);
-        header("Location: ../view/mascotas.php");
-        exit();
-    }
-    mysqli_stmt_close($stmt_check);
+    mysqli_stmt_close($check_stmt);
 
     $fecha_registro = date('Y-m-d H:i:s');
 
-    // Registro de mascota
-    $sql_insert = "INSERT INTO mascota 
-    (nombre_mascota, fecha_nacimiento_mascota, sexo_mascota, especie_mascota, raza_mascota, fecha_registro_mascota, id_propietario, id_veterinario_mascota, foto_mascota)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // Inserción
+    $sql = "INSERT INTO mascota 
+        (nombre_mascota, fecha_nacimiento_mascota, sexo_mascota, id_especie_mascota, id_raza_mascota, fecha_registro_mascota, id_propietario, id_veterinario_mascota, foto_mascota)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $stmt_insert = mysqli_prepare($conn, $sql_insert);
-
-    if (!$stmt_insert) {
-        $_SESSION['error'] = "Error al preparar el registro de mascota.";
-        header("Location: ../view/mascotas.php");
-        exit();
-    }
-
-    // Orden correcto
-    mysqli_stmt_bind_param($stmt_insert, "ssssssiss",
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "sssiiisss", 
         $nombre,
         $fecha_nacimiento,
         $sexo,
-        $especie,
-        $raza,
+        $id_especie,
+        $id_raza,
         $fecha_registro,
         $id_propietario,
-        $veterinario,
+        $id_veterinario,
         $foto_nombre
     );
 
-    if (mysqli_stmt_execute($stmt_insert)) {
+    if (mysqli_stmt_execute($stmt)) {
         $_SESSION['success'] = "Mascota registrada exitosamente.";
     } else {
-        $_SESSION['error'] = "Error al registrar la mascota: " . mysqli_stmt_error($stmt_insert);
+        $_SESSION['error'] = "Error al registrar la mascota: " . mysqli_stmt_error($stmt);
         if ($foto_nombre && file_exists($destino)) {
             unlink($destino);
         }
     }
 
-    mysqli_stmt_close($stmt_insert);
+    mysqli_stmt_close($stmt);
     mysqli_close($conn);
-
     header("Location: ../view/mascotas.php");
     exit();
 } else {
     $_SESSION['error'] = "Método de acceso no permitido.";
-    header("Location: ../view/mascotas.php");
+    header("Location: ../view/formulario_mascota.php");
     exit();
 }
-?>

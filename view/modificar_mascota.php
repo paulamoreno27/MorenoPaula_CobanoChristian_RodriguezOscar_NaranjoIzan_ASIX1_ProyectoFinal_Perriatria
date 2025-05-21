@@ -93,29 +93,25 @@ mysqli_stmt_close($stmt);
       </div>
 
       <div class="mb-3">
-        <label for="especie" class="form-label fw-bold">Especie:</label>
-        <input 
-          type="text" 
-          id="especie" 
-          name="especie" 
-          class="form-control" 
-          value="<?php echo htmlspecialchars($mascota['especie_mascota']); ?>" 
-          required 
-          onblur="valEspecieMascota()" />
-        <p id="especieError" class="mensaje-error"></p>
+        <label for="id_especie_mascota" class="form-label fw-bold">Especie:</label>
+        <select id="id_especie_mascota" name="id_especie_mascota" class="form-select" onchange="cargarRazas()" required>
+          <option value="">Seleccione una especie</option>
+          <?php
+          $sql = "SELECT id_especie, nombre_especie FROM especie";
+          $result = mysqli_query($conn, $sql);
+          while ($row = mysqli_fetch_assoc($result)) {
+              $selected = ($row['id_especie'] == $mascota['id_especie_mascota']) ? 'selected' : '';
+              echo "<option value='{$row['id_especie']}' $selected>{$row['nombre_especie']}</option>";
+          }
+          ?>
+        </select>
       </div>
 
       <div class="mb-3">
-        <label for="raza" class="form-label fw-bold">Raza:</label>
-        <input 
-          type="text" 
-          id="raza" 
-          name="raza" 
-          class="form-control" 
-          value="<?php echo htmlspecialchars($mascota['raza_mascota']); ?>" 
-          required 
-          onblur="valRazaMascota()" />
-        <p id="razaError" class="mensaje-error"></p>
+        <label for="id_raza_mascota" class="form-label fw-bold">Raza:</label>
+        <select id="id_raza_mascota" name="id_raza_mascota" class="form-select" required data-selected="<?php echo $mascota['id_raza_mascota']; ?>">
+          <option value="">Seleccione una raza</option>
+        </select>
       </div>
 
       <div class="mb-3">

@@ -25,7 +25,37 @@ if (isset($_GET['chip'])) {
     <title>Registrar Mascota</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
-    <script src="../js/script_mascotas.js"></script> <!-- Archivo JS para validaciones -->
+    <script src="../js/script_mascotas.js"></script>
+    <script>
+        // Diccionario con las razas agrupadas por especie
+        const razasPorEspecie = {
+            <?php
+            $sql = "SELECT id_raza, raza_nombre, id_especie_raza FROM raza";
+            $result = mysqli_query($conn, $sql);
+            $razasAgrupadas = [];
+
+            while ($row = mysqli_fetch_assoc($result)) {
+                $id_especie = $row['id_especie_raza'];
+                if (!isset($razasAgrupadas[$id_especie])) {
+                    $razasAgrupadas[$id_especie] = [];
+                }
+                $razasAgrupadas[$id_especie][] = [
+                    'id' => $row['id_raza'],
+                    'nombre' => $row['raza_nombre']
+                ];
+            }
+
+            foreach ($razasAgrupadas as $id => $razas) {
+                echo "'$id': [";
+                foreach ($razas as $raza) {
+                    echo "{ id: {$raza['id']}, nombre: '" . addslashes($raza['nombre']) . "' },"; //addslashes para evitar problemas con comillas simples
+                }
+                echo "],";
+            }
+            ?>
+        };
+    </script>
+    <script src="../js/raza.proc.js"></script>
 </head>
 <body>
     
@@ -71,17 +101,25 @@ if (isset($_GET['chip'])) {
             </select>
             <p id="sexoError" class="mensaje-error"></p>
 
-            <label for="especie" class="subtitulos">Especie:</label>
-            <input type="text" id="especie" name="especie" onblur="valEspecieMascota()" class="camposrellenar" required>
+            <label for="id_especie_mascota" class="subtitulos">Especie:</label>
+            <select id="id_especie_mascota" name="id_especie_mascota" class="camposrellenar" onchange="cargarRazas()" required>
+                <option value="">Seleccione una especie</option>
+                <?php
+                $sql = "SELECT id_especie, nombre_especie FROM especie";
+                $result = mysqli_query($conn, $sql);
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<option value='{$row['id_especie']}'>{$row['nombre_especie']}</option>";
+                }
+                ?>
+            </select>
             <p id="especieError" class="mensaje-error"></p>
 
-            <label for="raza" class="subtitulos">Raza:</label>
-            <input type="text" id="raza" name="raza" onblur="valRazaMascota()" class="camposrellenar" required>
+            <label for="id_raza_mascota" class="subtitulos">Raza:</label>
+            <select id="id_raza_mascota" name="id_raza_mascota" class="camposrellenar" required>
+                <option value="">Seleccione una raza</option>
+            </select>
             <p id="razaError" class="mensaje-error"></p>
-
-
-             
-            
+  
         <label for="veterinario" class="subtitulos">Veterinario asignado:</label>
         <select id="veterinario" name="veterinario" class="camposrellenar" required>
             <option value="">Seleccione un veterinario</option>

@@ -52,6 +52,10 @@
                 <input type="number" id="salario_veterinario" name="salario_veterinario" class="camposrellenar" onblur="valSalarioVet()" step="0.01" min="0" required>
                 <p id="salarioError" class="mensaje-error"></p>
 
+                <label for="contraseña_veterinario" class="subtitulos">Contraseña:</label>
+                <input type="password" id="contraseña_veterinario" name="contraseña_veterinario" class="camposrellenar" onblur="valContraseñaVet()" required>
+                <p id="contraseñaError" class="mensaje-error"></p>
+
                 <input class="btn" type="submit" value="Registrar">
             </form>
         </div>

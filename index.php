@@ -35,6 +35,9 @@ session_start();
       <li class="nav-item">
         <a class="nav-link" href="./view/veterinarios.php">Veterinarios</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./view/mascotas_veterinario.php">Pacientes</a>
+      </li>
     </div>
     <div class="nav-right">
       <li class="nav-item">

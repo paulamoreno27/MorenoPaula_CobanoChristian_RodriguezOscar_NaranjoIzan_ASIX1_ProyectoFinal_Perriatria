@@ -94,3 +94,48 @@ function valSalarioVet() {
     limpiarError("salarioError", "salario_veterinario");
     return true;
 }
+
+// Validar contraseña (mínimo 8 caracteres, al menos 1 mayúscula y 1 número)
+function valContraseñaVet() {
+    let contraseña = document.getElementById("contraseña_veterinario").value.trim();
+    let error = document.getElementById("contraseñaError");
+
+    // Verificar longitud mínima de 8 caracteres
+    if (contraseña.length < 8) {
+        mostrarError("contraseñaError", "La contraseña debe tener al menos 8 caracteres.");
+        document.getElementById("contraseña_veterinario").style.backgroundColor = "rgba(227, 105, 105, 0.44)"; // Rojo
+        return false;
+    }
+
+    // Verificar que contenga al menos una letra mayúscula
+    let tieneMayuscula = false;
+    for (let i = 0; i < contraseña.length; i++) {
+        if (contraseña[i] === contraseña[i].toUpperCase() && isNaN(contraseña[i])) {
+            tieneMayuscula = true;
+            break;
+        }
+    }
+    if (!tieneMayuscula) {
+        mostrarError("contraseñaError", "La contraseña debe incluir al menos una letra mayúscula.");
+        document.getElementById("contraseña_veterinario").style.backgroundColor = "rgba(227, 105, 105, 0.44)"; // Rojo
+        return false;
+    }
+
+    // Verificar que contenga al menos un número
+    let tieneNumero = false;
+    for (let i = 0; i < contraseña.length; i++) {
+        if (!isNaN(contraseña[i])) {
+            tieneNumero = true;
+            break;
+        }
+    }
+    if (!tieneNumero) {
+        mostrarError("contraseñaError", "La contraseña debe incluir al menos un número.");
+        document.getElementById("contraseña_veterinario").style.backgroundColor = "rgba(227, 105, 105, 0.44)"; // Rojo
+        return false;
+    }
+
+    // Si pasa todas las validaciones
+    limpiarError("contraseñaError", "contraseña_veterinario");
+    return true;
+}

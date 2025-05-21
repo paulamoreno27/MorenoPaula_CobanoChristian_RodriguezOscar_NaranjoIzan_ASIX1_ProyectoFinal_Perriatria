@@ -2,11 +2,11 @@
 session_start();
 require '../services/connection.php';
 
-if (!isset($_SESSION['id_propietario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión para registrar veterinarios.";
-    header("Location: ../view/login.php");
-    exit();
-}
+// if (!isset($_SESSION['id_propietario'])) {
+//     $_SESSION['error'] = "Debes iniciar sesión para registrar veterinarios.";
+//     header("Location: ../view/login.php");
+//     exit();
+// }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!isset($conn)) {
@@ -21,9 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $telefono = trim($_POST['telefono_veterinario'] ?? '');
     $especialidad = trim($_POST['especialidad_veterinario'] ?? '');
     $salario = floatval($_POST['salario_veterinario'] ?? 0);
+    $password = trim($_POST['contraseña_veterinario'] ?? '');
 
     // Validación PHP
-    if (empty($nombre) || empty($apellidos) || empty($email) || empty($telefono) || empty($especialidad) || $salario <= 0) {
+    if (empty($nombre) || empty($apellidos) || empty($email) || empty($telefono) || empty($especialidad) || $salario <= 0 || empty($password)) {
         $_SESSION['error'] = "Todos los campos son obligatorios y el salario debe ser mayor que 0.";
         header("Location: ../view/formulario_veterinario.php");
         exit();
@@ -53,6 +54,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         header("Location: ../view/formulario_veterinario.php");
         exit();
     }
+    if (strlen($password) < 6) {
+        $_SESSION['error'] = "La contraseña debe tener al menos 6 caracteres.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
 
     // Verificar si ya existe personal con ese email
     $sql_check = "SELECT id_personal FROM personal WHERE email_personal = ?";
@@ -68,6 +74,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
     mysqli_stmt_close($stmt_check);
+
+    // Encriptar la contraseña
+    $password_hashed = password_hash($password, PASSWORD_DEFAULT);
 
     // Insertar en personal
     $sql_personal = "INSERT INTO personal (nombre_personal, email_personal) VALUES (?, ?)";
@@ -87,11 +96,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $sql_veterinario = "INSERT INTO veterinario (
         id_personal, nombre_veterinario, apellidos_veterinario, 
         telefono_veterinario, email_veterinario, 
-        especialidad_veterinario, salario_veterinario
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        especialidad_veterinario, salario_veterinario, contraseña_veterinario
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt_veterinario = mysqli_prepare($conn, $sql_veterinario);
-    mysqli_stmt_bind_param($stmt_veterinario, "isssssd", $id_personal, $nombre, $apellidos, $telefono, $email, $especialidad, $salario);
+    mysqli_stmt_bind_param($stmt_veterinario, "isssssss", $id_personal, $nombre, $apellidos, $telefono, $email, $especialidad, $salario, $password_hashed);
 
     if (mysqli_stmt_execute($stmt_veterinario)) {
         $_SESSION['success'] = "Veterinario registrado exitosamente.";

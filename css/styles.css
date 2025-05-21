@@ -123,6 +123,13 @@ Login */
   transform: translateY(-50%);
   height: 75px; 
 }
+.logo-form-login{
+  position: absolute;
+  right: 400px;
+  top: 19.5%;
+  transform: translateY(-50%);
+  height: 75px; 
+}
 
 .form-title {
   text-align: center;

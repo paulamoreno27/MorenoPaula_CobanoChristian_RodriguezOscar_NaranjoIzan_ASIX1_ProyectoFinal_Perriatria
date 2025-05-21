@@ -38,15 +38,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         exit();
     }
 
-    // Consulta preparada para mayor seguridad
-    $query = "SELECT id_propietario, contraseña_propietario FROM propietario WHERE nombre_propietario = ?";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "s", $usuario);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
+    // Verificar si el usuario es un propietario
+    $query_propietario = "SELECT id_propietario, contraseña_propietario FROM propietario WHERE nombre_propietario = ?";
+    $stmt_propietario = mysqli_prepare($conn, $query_propietario);
+    mysqli_stmt_bind_param($stmt_propietario, "s", $usuario);
+    mysqli_stmt_execute($stmt_propietario);
+    $result_propietario = mysqli_stmt_get_result($stmt_propietario);
 
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
+    if ($result_propietario && mysqli_num_rows($result_propietario) > 0) {
+        $row = mysqli_fetch_assoc($result_propietario);
         $hash = $row['contraseña_propietario'];
 
         if (password_verify($password, $hash)) {
@@ -60,10 +60,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             $_SESSION['error'] = "Contraseña incorrecta.";
         }
     } else {
-        $_SESSION['error'] = "El usuario no existe.";
+        // Verificar si el usuario es un veterinario
+        $query_veterinario = "SELECT id_veterinario, contraseña_veterinario FROM veterinario WHERE nombre_veterinario = ?";
+        $stmt_veterinario = mysqli_prepare($conn, $query_veterinario);
+        mysqli_stmt_bind_param($stmt_veterinario, "s", $usuario);
+        mysqli_stmt_execute($stmt_veterinario);
+        $result_veterinario = mysqli_stmt_get_result($stmt_veterinario);
+
+        if ($result_veterinario && mysqli_num_rows($result_veterinario) > 0) {
+            $row = mysqli_fetch_assoc($result_veterinario);
+            $hash = $row['contraseña_veterinario'];
+
+            if (password_verify($password, $hash)) {
+                // Guardar id_veterinario y nombre de usuario en sesión
+                $_SESSION['id_veterinario'] = $row['id_veterinario'];
+                $_SESSION['usuario'] = $usuario;
+
+                header("Location: ../index.php");
+                exit();
+            } else {
+                $_SESSION['error'] = "Contraseña incorrecta.";
+            }
+        } else {
+            $_SESSION['error'] = "El usuario no existe.";
+        }
+
+        mysqli_stmt_close($stmt_veterinario);
     }
 
-    mysqli_stmt_close($stmt);
+    mysqli_stmt_close($stmt_propietario);
     mysqli_close($conn);
 
     header("Location: ../view/login.php");

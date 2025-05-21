@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         mysqli_stmt_close($sentencia1); 
     } else {
-        $_SESSION['error'] = "Error en la consulta."; 
+        $_SESSION['error'] = "Error en la consulta.";
         header("Location:../view/register.php");
         exit;
     }

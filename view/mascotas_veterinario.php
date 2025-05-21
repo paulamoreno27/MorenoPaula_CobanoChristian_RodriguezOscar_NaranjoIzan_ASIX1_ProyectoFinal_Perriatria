@@ -2,32 +2,41 @@
 session_start();
 require '../services/connection.php';
 
-if (!isset($_SESSION['id_propietario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión como propietario para ver tus mascotas.";
+if (!isset($_SESSION['id_veterinario'])) {
+    $_SESSION['error'] = "Debes iniciar sesión como veterinario para ver tus mascotas.";
     header("Location: ./login.php");
     exit();
 }
 
-$id_propietario = (int)$_SESSION['id_propietario'];
+$id_veterinario = (int)$_SESSION['id_veterinario'];
+
+// Verificar si el usuario es un veterinario válido
+$sql_verificar_veterinario = "SELECT id_veterinario FROM veterinario WHERE id_veterinario = $id_veterinario";
+$result_verificar = mysqli_query($conn, $sql_verificar_veterinario);
+
+if (!$result_verificar || mysqli_num_rows($result_verificar) === 0) {
+    $_SESSION['error'] = "Acceso denegado. Solo los veterinarios pueden acceder a esta página.";
+    header("Location: ./login.php");
+    exit();
+}
 
 // Filtros
-$where = ["id_propietario = $id_propietario"];
+$where = ["m.id_veterinario_mascota = $id_veterinario"];
 
 if (!empty($_GET['filtro-sexo'])) {
     $sexo = mysqli_real_escape_string($conn, $_GET['filtro-sexo']);
-    $where[] = "sexo_mascota = '$sexo'";
+    $where[] = "m.sexo_mascota = '$sexo'";
 }
 
 if (!empty($_GET['filtro-especie'])) {
-    $id_especie = (int)$_GET['filtro-especie'];
-    $where[] = "m.id_especie_mascota = $id_especie";
+    $especie = mysqli_real_escape_string($conn, $_GET['filtro-especie']);
+    $where[] = "m.especie_mascota = '$especie'";
 }
 
 if (!empty($_GET['filtro-raza'])) {
-    $id_raza = (int)$_GET['filtro-raza'];
-    $where[] = "m.id_raza_mascota = $id_raza";
+    $raza = mysqli_real_escape_string($conn, $_GET['filtro-raza']);
+    $where[] = "m.raza_mascota = '$raza'";
 }
-
 
 $condiciones = implode(" AND ", $where);
 if (empty($condiciones)) {
@@ -35,20 +44,24 @@ if (empty($condiciones)) {
 }
 
 $sql = "SELECT 
-          m.chip_mascota,
-          m.nombre_mascota,
-          m.fecha_nacimiento_mascota,
-          m.sexo_mascota,
-          e.nombre_especie AS especie,
-          r.raza_nombre AS raza,
-          v.nombre_veterinario,
-          m.foto_mascota
-        FROM mascota m
-        JOIN especie e ON m.id_especie_mascota = e.id_especie
-        JOIN raza r ON m.id_raza_mascota = r.id_raza
-        JOIN veterinario v ON m.id_veterinario_mascota = v.id_veterinario
-        WHERE $condiciones
-        ORDER BY m.fecha_registro_mascota DESC";
+            m.chip_mascota, 
+            m.foto_mascota, 
+            m.nombre_mascota, 
+            m.fecha_nacimiento_mascota, 
+            m.sexo_mascota, 
+            m.especie_mascota, 
+            m.raza_mascota, 
+            v.nombre_veterinario 
+        FROM 
+            mascota m
+        INNER JOIN 
+            veterinario v 
+        ON 
+            m.id_veterinario_mascota = v.id_veterinario
+        WHERE 
+            $condiciones 
+        ORDER BY 
+            m.fecha_registro_mascota DESC";
 
 $result = mysqli_query($conn, $sql);
 if (!$result) {
@@ -66,11 +79,11 @@ if (!$result) {
   <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
   <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
-  <title>Mascotas</title>
+  <title>Pacientes</title>
 </head>
 <body>
 <header class="text-center">
-    <h1>Mascotas</h1>
+    <h1>Pacientes</h1>
     <div>
       <img src="../resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
     </div>
@@ -115,15 +128,14 @@ if (!$result) {
 
       <div class="col-md-3">
         <label for="filtro-especie">Especie:</label>
-        <select class="form-select" name="filtro-especie" id="filtro-especie" onchange="cargarRazasFiltro('filtro-especie', 'filtro-raza')">
+        <select class="form-select" name="filtro-especie" id="filtro-especie">
           <option value="">Todas</option>
           <?php
-          $res_especie = mysqli_query($conn, "SELECT id_especie, nombre_especie FROM especie");
+          $res_especie = mysqli_query($conn, "SELECT DISTINCT especie_mascota FROM mascota WHERE id_propietario = $id_propietario");
           while ($row = mysqli_fetch_assoc($res_especie)) {
-              $id = $row['id_especie'];
-              $nombre = htmlspecialchars($row['nombre_especie']);
-              $sel = (isset($_GET['filtro-especie']) && $_GET['filtro-especie'] == $id) ? 'selected' : '';
-              echo "<option value='$id' $sel>$nombre</option>";
+            $val = htmlspecialchars($row['especie_mascota']);
+            $sel = (isset($_GET['filtro-especie']) && $_GET['filtro-especie'] === $val) ? 'selected' : '';
+            echo "<option value='$val' $sel>$val</option>";
           }
           ?>
         </select>
@@ -134,12 +146,11 @@ if (!$result) {
         <select class="form-select" name="filtro-raza" id="filtro-raza">
           <option value="">Todas</option>
           <?php
-          $res_raza = mysqli_query($conn, "SELECT id_raza, raza_nombre FROM raza ORDER BY raza_nombre");
+          $res_raza = mysqli_query($conn, "SELECT DISTINCT raza_mascota FROM mascota WHERE id_propietario = $id_propietario");
           while ($row = mysqli_fetch_assoc($res_raza)) {
-              $id = $row['id_raza'];
-              $nombre = htmlspecialchars($row['raza_nombre']);
-              $sel = (isset($_GET['filtro-raza']) && $_GET['filtro-raza'] == $id) ? 'selected' : '';
-              echo "<option value='$id' $sel>$nombre</option>";
+            $val = htmlspecialchars($row['raza_mascota']);
+            $sel = (isset($_GET['filtro-raza']) && $_GET['filtro-raza'] === $val) ? 'selected' : '';
+            echo "<option value='$val' $sel>$val</option>";
           }
           ?>
         </select>
@@ -160,7 +171,6 @@ if (!$result) {
             <th>Nombre</th>
             <th>Fecha de nacimiento</th>
             <th>Propietario</th>
-            <th>Veterinario</th>
             <th>Sexo</th>
             <th>Especie</th>
             <th>Raza</th>
@@ -182,10 +192,9 @@ if (!$result) {
                 <td><?php echo htmlspecialchars($mascota['nombre_mascota']); ?></td>
                 <td><?php echo htmlspecialchars($mascota['fecha_nacimiento_mascota']); ?></td>
                 <td><?php echo htmlspecialchars($_SESSION['usuario']); ?></td>
-                <td><?php echo htmlspecialchars($mascota['nombre_veterinario'] ?? 'Sin asignar'); ?></td>
                 <td><?php echo ($mascota['sexo_mascota'] === 'M') ? 'Macho' : 'Hembra'; ?></td>
-                <td><?php echo htmlspecialchars($mascota['especie']); ?></td>
-                <td><?php echo htmlspecialchars($mascota['raza']); ?></td>
+                <td><?php echo htmlspecialchars($mascota['especie_mascota']); ?></td>
+                <td><?php echo htmlspecialchars($mascota['raza_mascota']); ?></td>
                 <td><a href="../view/modificar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
                 <td><a href="../process/eliminar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
               </tr>

@@ -27,9 +27,15 @@ function valUsuario()
 function valPassword()
 {
     let passUser = document.getElementById("password").value;
+    let regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if(passUser == "") 
     {
         mostrarError("passwordError", "La contraseña es obligatoria");
+        document.getElementById("password").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
+    }
+    else if(!regex.test(passUser))
+    {
+        mostrarError("passwordError", "Mínimo 8 caracteres, 1 número y 1 mayúscula");
         document.getElementById("password").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
     else 

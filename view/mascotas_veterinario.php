@@ -30,12 +30,12 @@ if (!empty($_GET['filtro-sexo'])) {
 
 if (!empty($_GET['filtro-especie'])) {
     $especie = mysqli_real_escape_string($conn, $_GET['filtro-especie']);
-    $where[] = "m.especie_mascota = '$especie'";
+    $where[] = "m.id_especie_mascota = '$especie'";
 }
 
 if (!empty($_GET['filtro-raza'])) {
     $raza = mysqli_real_escape_string($conn, $_GET['filtro-raza']);
-    $where[] = "m.raza_mascota = '$raza'";
+    $where[] = "m.id_raza_mascota = '$raza'";
 }
 
 $condiciones = implode(" AND ", $where);
@@ -44,26 +44,23 @@ if (empty($condiciones)) {
 }
 
 $sql = "SELECT 
-            m.chip_mascota, 
-            m.foto_mascota, 
-            m.nombre_mascota, 
-            m.fecha_nacimiento_mascota, 
-            m.sexo_mascota, 
-            m.especie_mascota, 
-            m.raza_mascota, 
-            v.nombre_veterinario 
-        FROM 
-            mascota m
-        INNER JOIN 
-            veterinario v 
-        ON 
-            m.id_veterinario_mascota = v.id_veterinario
-        WHERE 
-            $condiciones 
-        ORDER BY 
-            m.fecha_registro_mascota DESC";
+          m.chip_mascota,
+          m.nombre_mascota,
+          m.fecha_nacimiento_mascota,
+          m.sexo_mascota,
+          e.nombre_especie AS especie,
+          r.raza_nombre AS raza,
+          v.nombre_veterinario,
+          m.foto_mascota
+        FROM mascota m
+        JOIN especie e ON m.id_especie_mascota = e.id_especie
+        JOIN raza r ON m.id_raza_mascota = r.id_raza
+        JOIN veterinario v ON m.id_veterinario_mascota = v.id_veterinario
+        WHERE $condiciones
+        ORDER BY m.fecha_registro_mascota DESC";
 
 $result = mysqli_query($conn, $sql);
+
 if (!$result) {
     die("Error en la consulta: " . mysqli_error($conn));
 }
@@ -193,8 +190,8 @@ if (!$result) {
                 <td><?php echo htmlspecialchars($mascota['fecha_nacimiento_mascota']); ?></td>
                 <td><?php echo htmlspecialchars($_SESSION['usuario']); ?></td>
                 <td><?php echo ($mascota['sexo_mascota'] === 'M') ? 'Macho' : 'Hembra'; ?></td>
-                <td><?php echo htmlspecialchars($mascota['especie_mascota']); ?></td>
-                <td><?php echo htmlspecialchars($mascota['raza_mascota']); ?></td>
+                <td><?php echo htmlspecialchars($mascota['especie']); ?></td>
+                <td><?php echo htmlspecialchars($mascota['raza']); ?></td>
                 <td><a href="../view/modificar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
                 <td><a href="../process/eliminar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
               </tr>

@@ -17,20 +17,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id_raza = (int)($_POST['id_raza_mascota'] ?? 0);
     $id_veterinario = (int)($_POST['veterinario'] ?? 0);
 
-    // Validaciones
-    if (!$nombre || !$fecha_nacimiento || !$sexo || !$id_especie || !$id_raza || !$id_veterinario) {
-        $_SESSION['error'] = "Todos los campos son obligatorios.";
+    // Validar nombre
+    if (empty($nombre) || strlen($nombre) < 3) {
+        $_SESSION['error'] = "El nombre de la mascota es obligatorio y debe tener al menos 3 caracteres.";
         header("Location: ../view/formulario_mascota.php");
         exit();
     }
 
-    if (!in_array($sexo, ['M', 'F'])) {
-        $_SESSION['error'] = "El sexo debe ser 'M' o 'F'.";
+    // Validar fecha de nacimiento
+    if (strtotime($fecha_nacimiento) > time()) {
+        $_SESSION['error'] = "La fecha de nacimiento no puede ser posterior a la fecha actual.";
         header("Location: ../view/formulario_mascota.php");
         exit();
     }
 
-    // Foto
+    // Validar sexo
+    if (empty($sexo) || !in_array($sexo, ['M', 'F'])) {
+        $_SESSION['error'] = "El sexo es obligatorio y debe ser 'M' o 'F'.";
+        header("Location: ../view/formulario_mascota.php");
+        exit();
+    }
+
+    // Validar especie
+    if ($id_especie <= 0) {
+        $_SESSION['error'] = "Debes seleccionar una especie válida.";
+        header("Location: ../view/formulario_mascota.php");
+        exit();
+    }
+
+    // Validar raza
+    if ($id_raza <= 0) {
+        $_SESSION['error'] = "Debes seleccionar una raza válida.";
+        header("Location: ../view/formulario_mascota.php");
+        exit();
+    }
+
+    // Validar veterinario
+    if ($id_veterinario <= 0) {
+        $_SESSION['error'] = "Debes seleccionar un veterinario válido.";
+        header("Location: ../view/formulario_mascota.php");
+        exit();
+    }
+
+    // Validar foto
     $foto_nombre = null;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $foto_tmp = $_FILES['foto']['tmp_name'];

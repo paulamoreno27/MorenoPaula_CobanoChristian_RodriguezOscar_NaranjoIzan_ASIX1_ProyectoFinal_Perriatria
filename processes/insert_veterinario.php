@@ -54,11 +54,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         header("Location: ../view/formulario_veterinario.php");
         exit();
     }
-    if (strlen($password) < 6) {
-        $_SESSION['error'] = "La contraseña debe tener al menos 6 caracteres.";
+
+    if (strlen($password) < 8) {
+        $_SESSION['error'] = "La contraseña debe tener al menos 8 caracteres.";
         header("Location: ../view/formulario_veterinario.php");
         exit();
     }
+    if (!preg_match('/[A-Z]/', $password)) {
+        $_SESSION['error'] = "La contraseña debe contener al menos una letra mayúscula.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+    if (!preg_match('/[0-9]/', $password)) {
+        $_SESSION['error'] = "La contraseña debe contener al menos un número.";
+        header("Location: ../view/formulario_veterinario.php");
+        exit();
+    }
+
 
     // Verificar si ya existe personal con ese email
     $sql_check = "SELECT id_personal FROM personal WHERE email_personal = ?";

@@ -6,39 +6,52 @@ if (!isset($_SESSION['id_propietario'])) {
     header("Location: ../view/login.php");
     exit();
 }
-// Validación PHP de los datos recibidos
-$errores = [];
+
 // Validar nombre
 $nombre = trim($_POST['nombre']);
 if (empty($nombre) || strlen($nombre) < 2) {
-    $errores[] = "El nombre es obligatorio y debe tener al menos 2 caracteres.";
+    $_SESSION['error'] = "El nombre es obligatorio y debe tener al menos 2 caracteres.";
+    header("Location: ../view/formulario_veterinario.php");
+    exit();
 }
+
 // Validar apellidos
 $apellidos = trim($_POST['apellidos']);
 if (empty($apellidos) || strlen($apellidos) < 2) {
-    $errores[] = "Los apellidos son obligatorios y deben tener al menos 2 caracteres.";
+    $_SESSION['error'] = "Los apellidos son obligatorios y deben tener al menos 2 caracteres.";
+    header("Location: ../view/formulario_veterinario.php");
+    exit();
 }
+
 // Validar teléfono (solo dígitos y longitud mínima)
+$telefono = trim($_POST['telefono']);
 if (empty($telefono) || !preg_match('/^[0-9]{9,15}$/', $telefono)) {
-    $errores[] = "El teléfono debe contener solo números y tener entre 9 y 15 dígitos.";
+    $_SESSION['error'] = "El teléfono debe contener solo números y tener entre 9 y 15 dígitos.";
+    header("Location: ../view/formulario_veterinario.php");
+    exit();
 }
+
 // Validar email
+$email = trim($_POST['email']);
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errores[] = "El email no es válido.";
+    $_SESSION['error'] = "El email no es válido.";
+    header("Location: ../view/formulario_veterinario.php");
+    exit();
 }
+
 // Validar especialidad
+$especialidad = trim($_POST['especialidad']);
 if (empty($especialidad) || strlen($especialidad) < 3) {
-    $errores[] = "La especialidad es obligatoria y debe tener al menos 3 caracteres.";
+    $_SESSION['error'] = "La especialidad es obligatoria y debe tener al menos 3 caracteres.";
+    header("Location: ../view/formulario_veterinario.php");
+    exit();
 }
+
 // Validar salario (positivo)
+$salario = floatval($_POST['salario']);
 if (!is_numeric($salario) || $salario < 0) {
-    $errores[] = "El salario debe ser un número positivo.";
-}
-// Mostrar errores y detener si hay alguno
-if (!empty($errores)) {
-    foreach ($errores as $error) {
-        echo '<p style="color:red;">' . htmlspecialchars($error) . '</p>';
-    }
+    $_SESSION['error'] = "El salario debe ser un número positivo.";
+    header("Location: ../view/formulario_veterinario.php");
     exit();
 }
 

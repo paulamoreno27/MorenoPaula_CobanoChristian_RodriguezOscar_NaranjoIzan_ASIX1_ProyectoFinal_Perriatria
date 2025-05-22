@@ -2,23 +2,36 @@
 session_start();
 require '../services/connection.php';
 
-if (!isset($_SESSION['id_usuario'])) { //Verificar  que solo pueda entrar el admin 
+// Verificar que solo pueda entrar el admin
+if (!isset($_SESSION['id_usuario']) || ($_SESSION['rol'] ?? '') !== 'admin') {
     $_SESSION['error'] = "Debes iniciar sesión como admin para ver los veterinarios.";
     header("Location: ./login.php");
     exit();
 }
 
-$id_propietario = $_SESSION['id_propietario'];
+$id_usuario = $_SESSION['id_usuario'];
 
 $where = "1=1";
+$params = [];
+$types = '';
+
 if (!empty($_GET['filtro-especialidad'])) {
-    $especialidad = mysqli_real_escape_string($conn, $_GET['filtro-especialidad']);
-    $where .= " AND especialidad_veterinario = '$especialidad'";
+    $where .= " AND especialidad_veterinario = ?";
+    $params[] = $_GET['filtro-especialidad'];
+    $types .= 's';
 }
 
 $sql = "SELECT id_veterinario, nombre_veterinario, apellidos_veterinario, telefono_veterinario, email_veterinario, salario_veterinario, especialidad_veterinario 
         FROM veterinario WHERE $where ORDER BY nombre_veterinario ASC";
-$result = mysqli_query($conn, $sql);
+
+$stmt = $conn->prepare($sql);
+
+if ($types) {
+    $stmt->bind_param($types, ...$params);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -48,8 +61,16 @@ $result = mysqli_query($conn, $sql);
     <li class="nav-item"><a class="nav-link active" href="./veterinarios.php">Veterinarios</a></li>
   </div>
   <div class="nav-right">
-    <li class="nav-item"><a class="nav-link" href="./login.php">Iniciar sesión</a></li>
-    <li class="nav-item"><a class="nav-link" href="./register.php">Darse de alta</a></li>
+    <?php if (!isset($_SESSION['id_usuario'])): ?>
+      <li class="nav-item"><a class="nav-link" href="./login.php">Iniciar sesión</a></li>
+      <li class="nav-item"><a class="nav-link" href="./register.php">Darse de alta</a></li>
+    <?php else: ?>
+      <li class="nav-item">
+        <form action="../processes/logout.proc.php" method="post" class="d-inline">
+          <button type="submit" class="nav-link btn btn-link" style="display:inline; padding:0; border:none; background:none;">Cerrar sesión</button>
+        </form>
+      </li>
+    <?php endif; ?>
   </div>
 </ul>
 
@@ -115,12 +136,12 @@ $result = mysqli_query($conn, $sql);
                 <td><?= htmlspecialchars($vet['email_veterinario']) ?></td>
                 <td><?= htmlspecialchars($vet['especialidad_veterinario']) ?></td>
                 <td><?= htmlspecialchars(number_format($vet['salario_veterinario'], 2)) ?></td>
-                <td><a href="../view/modificar_veterinario.php?id_veterinario=<?php echo $vet['id_veterinario']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
-                <td><a href="../processes/eliminar_veterinario.php?id_veterinario=<?php echo $vet['id_veterinario']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
+                <td><a href="../view/modificar_veterinario.php?id_veterinario=<?= $vet['id_veterinario']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
+                <td><a href="../processes/eliminar_veterinario.php?id_veterinario=<?= $vet['id_veterinario']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar este veterinario?');">Borrar</a></td>
               </tr>
             <?php endwhile; ?>
           <?php else: ?>
-            <tr><td colspan="6" class="text-center">No hay veterinarios disponibles para este filtro.</td></tr>
+            <tr><td colspan="8" class="text-center">No hay veterinarios disponibles para este filtro.</td></tr>
           <?php endif; ?>
         </tbody>
       </table>
@@ -137,10 +158,10 @@ $result = mysqli_query($conn, $sql);
   <?php endif; ?>
 </main>
 
-  <div class="scroll-top-panel">
-      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Volver arriba</button>
-  </div>
-  
+<div class="scroll-top-panel">
+  <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Volver arriba</button>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <footer class="footer text-center mt-4">
   <p>&copy; 2023 Perriatria Veterinario. Todos los derechos reservados.</p>

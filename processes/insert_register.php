@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location:../view/register.php");
         exit;
     }
-    if (strlen($_POST['password']) < 6) {
-        $_SESSION['error'] = "La contraseña debe tener al menos 6 caracteres.";
+    if (strlen($_POST['password']) < 8) {
+        $_SESSION['error'] = "La contraseña debe tener al menos 8 caracteres.";
         header("Location:../view/register.php");
         exit;
     }

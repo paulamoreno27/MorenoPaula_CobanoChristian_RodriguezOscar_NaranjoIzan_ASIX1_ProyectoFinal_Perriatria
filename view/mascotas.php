@@ -2,17 +2,21 @@
 session_start();
 require '../services/connection.php';
 
-if (!isset($_SESSION['id_propietario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión como propietario para ver tus mascotas.";
+if (!isset($_SESSION['id_propietario']) && (!isset($_SESSION['rol']) || strtolower($_SESSION['rol']) !== 'admin')) {
+    $_SESSION['error'] = "Debes iniciar sesión para ver las mascotas.";
     header("Location: ./login.php");
     exit();
 }
 
-$id_propietario = (int)$_SESSION['id_propietario'];
+$where = [];
 
-// Filtros
-$where = ["id_propietario = $id_propietario"];
+// Si es propietario, filtro por su ID
+if (isset($_SESSION['id_propietario'])) {
+    $id_propietario = (int)$_SESSION['id_propietario'];
+    $where[] = "id_propietario = $id_propietario";
+}
 
+// Aplicar filtros de GET como antes
 if (!empty($_GET['filtro-sexo'])) {
     $sexo = mysqli_real_escape_string($conn, $_GET['filtro-sexo']);
     $where[] = "sexo_mascota = '$sexo'";
@@ -28,12 +32,12 @@ if (!empty($_GET['filtro-raza'])) {
     $where[] = "m.id_raza_mascota = $id_raza";
 }
 
-
 $condiciones = implode(" AND ", $where);
 if (empty($condiciones)) {
-    $condiciones = "1"; // Para que la consulta sea válida
+    $condiciones = "1"; // Para que la consulta sea válida y traiga todo
 }
 
+// Consulta igual que antes
 $sql = "SELECT 
           m.chip_mascota,
           m.nombre_mascota,
@@ -54,6 +58,7 @@ $result = mysqli_query($conn, $sql);
 if (!$result) {
     die("Error en la consulta: " . mysqli_error($conn));
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +80,7 @@ if (!$result) {
       <img src="../resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
     </div>
 </header>
-
+<!-- Barra de navegación -->
 <ul class="nav nav-tabs custom-navbar w-100">
   <div class="nav-left">
     <li class="nav-item"><a class="nav-link active" href="../index.php">Inicio</a></li>
@@ -174,7 +179,7 @@ if (!$result) {
               <tr>
                 <td>
                   <?php if (!empty($mascota['foto_mascota'])): ?>
-                    <img src="../resources/<?php echo htmlspecialchars($mascota['foto_mascota']); ?>" alt="Foto de <?php echo htmlspecialchars($mascota['nombre_mascota']); ?>" style="max-width:80px; border-radius:5px;">
+                    <img src="../resources/<?php echo htmlspecialchars($mascota['foto_mascota']); ?>" alt="Foto de <?php echo htmlspecialchars($mascota['nombre_mascota']); ?>" >
                   <?php else: ?>
                     Sin foto
                   <?php endif; ?>

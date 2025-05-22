@@ -46,36 +46,47 @@ mysqli_stmt_close($stmt);
       <h2 class="text-success">Modificar Veterinario</h2>
       <a href="../view/veterinarios.php" class="btn btn-outline-secondary btn-sm">Atrás</a>
     </div>
+
+    <!-- Mostrar error de sesión si existe -->
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger">
+            <?php 
+                echo htmlspecialchars($_SESSION['error']); 
+                unset($_SESSION['error']); // Limpiar el error después de mostrarlo
+            ?>
+        </div>
+    <?php endif; ?>
+
     <form action="../processes/update_veterinario.php" method="post" novalidate>
       <input type="hidden" name="id_veterinario" value="<?php echo htmlspecialchars($veterinario['id_veterinario']); ?>">
       <div class="mb-3">
         <label for="nombre" class="form-label fw-bold">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" onblur="valNombreVet()"  class="form-control" value="<?php echo htmlspecialchars($veterinario['nombre_veterinario']); ?>" required />
+        <input type="text" id="nombre" name="nombre" onblur="valNombreVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['nombre_veterinario']); ?>" required />
         <p id="nombreError" class="mensaje-error"></p>
       </div>
       <div class="mb-3">
         <label for="apellidos" class="form-label fw-bold">Apellidos:</label>
-        <input type="text" id="apellidos" name="apellidos" class="form-control" onblur="valApellidosVet()" value="<?php echo htmlspecialchars($veterinario['apellidos_veterinario']); ?>" required  />
+        <input type="text" id="apellidos" name="apellidos" class="form-control" onblur="valApellidosVet()" value="<?php echo htmlspecialchars($veterinario['apellidos_veterinario']); ?>" required />
         <p id="apellidosError" class="mensaje-error"></p>
       </div>
       <div class="mb-3">
         <label for="telefono" class="form-label fw-bold">Teléfono:</label>
-        <input type="text" id="telefono" name="telefono" onblur="valTelefonoVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['telefono_veterinario']); ?>" required  />
+        <input type="text" id="telefono" name="telefono" onblur="valTelefonoVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['telefono_veterinario']); ?>" required />
         <p id="telefonoError" class="mensaje-error"></p>
       </div>
       <div class="mb-3">
         <label for="email" class="form-label fw-bold">Email:</label>
-        <input type="email" id="email" name="email" class="form-control" onblur="valEmailVet()" value="<?php echo htmlspecialchars($veterinario['email_veterinario']); ?>" required  />
+        <input type="email" id="email" name="email" class="form-control" onblur="valEmailVet()" value="<?php echo htmlspecialchars($veterinario['email_veterinario']); ?>" required />
         <p id="emailError" class="mensaje-error"></p>
       </div>
       <div class="mb-3">
         <label for="especialidad" class="form-label fw-bold">Especialidad:</label>
-        <input type="text" id="especialidad" name="especialidad" onblur="valEspecialidadVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['especialidad_veterinario']); ?>" required  />
+        <input type="text" id="especialidad" name="especialidad" onblur="valEspecialidadVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['especialidad_veterinario']); ?>" required />
         <p id="especialidadError" class="mensaje-error"></p>
       </div>
       <div class="mb-3">
         <label for="salario" class="form-label fw-bold">Salario:</label>
-        <input type="number" step="0.01" id="salario" name="salario" onblur="valSalarioVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['salario_veterinario']); ?>" required  />
+        <input type="number" step="0.01" id="salario" name="salario" onblur="valSalarioVet()" class="form-control" value="<?php echo htmlspecialchars($veterinario['salario_veterinario']); ?>" required />
         <p id="salarioError" class="mensaje-error"></p>
       </div>
       <button type="submit" class="btn btn-success w-100">Guardar cambios</button>

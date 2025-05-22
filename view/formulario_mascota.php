@@ -86,15 +86,15 @@ if (isset($_GET['chip'])) {
             <form action="../processes/insert_mascota.php" method="POST"  enctype="multipart/form-data">
 
             <label for="nombre" class="subtitulos">Nombre de la mascota:</label>
-            <input type="text" id="nombre" name="nombre" onblur="valNombreMascota()" class="camposrellenar" required>
+            <input type="text" id="nombre" name="nombre" onblur="valNombreMascota()" class="camposrellenar" >
             <p id="nombreError" class="mensaje-error"></p>
 
             <label for="fecha_nacimiento" class="subtitulos">Fecha de nacimiento:</label>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" onblur="valNacimientoMascota()" class="camposrellenar" required>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" onblur="valNacimientoMascota()" class="camposrellenar" >
             <p id="fechaNacimientoError" class="mensaje-error"></p>
 
             <label for="sexo" class="subtitulos">Sexo:</label>
-            <select id="sexo" name="sexo" onblur="valSexoMascota()" class="camposrellenar" required>
+            <select id="sexo" name="sexo" onblur="valSexoMascota()" class="camposrellenar" >
                 <option value="">Seleccione</option>
                 <option value="M">Macho</option>
                 <option value="F">Hembra</option>
@@ -102,7 +102,7 @@ if (isset($_GET['chip'])) {
             <p id="sexoError" class="mensaje-error"></p>
 
             <label for="id_especie_mascota" class="subtitulos">Especie:</label>
-            <select id="id_especie_mascota" name="id_especie_mascota" class="camposrellenar" onchange="cargarRazas()" required>
+            <select id="id_especie_mascota" name="id_especie_mascota" class="camposrellenar" onchange="cargarRazas()" >
                 <option value="">Seleccione una especie</option>
                 <?php
                 $sql = "SELECT id_especie, nombre_especie FROM especie";
@@ -115,13 +115,13 @@ if (isset($_GET['chip'])) {
             <p id="especieError" class="mensaje-error"></p>
 
             <label for="id_raza_mascota" class="subtitulos">Raza:</label>
-            <select id="id_raza_mascota" name="id_raza_mascota" class="camposrellenar" required>
+            <select id="id_raza_mascota" name="id_raza_mascota" class="camposrellenar" >
                 <option value="">Seleccione una raza</option>
             </select>
             <p id="razaError" class="mensaje-error"></p>
   
         <label for="veterinario" class="subtitulos">Veterinario asignado:</label>
-        <select id="veterinario" name="veterinario" class="camposrellenar" required>
+        <select id="veterinario" name="veterinario" class="camposrellenar" >
             <option value="">Seleccione un veterinario</option>
             <?php
             $result = mysqli_query($conn, "SELECT id_veterinario, nombre_veterinario FROM veterinario");

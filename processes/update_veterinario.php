@@ -3,18 +3,19 @@ include "../services/connection.php";
 session_start();
 
 // Cambia esto si los veterinarios también pueden editar
-if (!isset($_SESSION['id_veterinario'])) {
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+    $_SESSION['error'] = "Acceso restringido. Solo administradores.";
     header("Location: ../view/login.php");
     exit();
 }
 
 // Validaciones
-$nombre = trim($_POST['nombre']);
-$apellidos = trim($_POST['apellidos']);
-$telefono = trim($_POST['telefono']);
-$email = trim($_POST['email']);
-$especialidad = trim($_POST['especialidad']);
-$salario = floatval($_POST['salario']);
+$nombre = trim($_POST['nombre_veterinario']);
+$apellidos = trim($_POST['apellidos_veterinario']);
+$telefono = trim($_POST['telefono_veterinario']);
+$email = trim($_POST['email_veterinario']);
+$especialidad = trim($_POST['especialidad_veterinario']);
+$salario = floatval($_POST['salario_veterinario']);
 
 if (empty($nombre) || strlen($nombre) < 2) {
     $_SESSION['error'] = "El nombre es obligatorio y debe tener al menos 2 caracteres.";

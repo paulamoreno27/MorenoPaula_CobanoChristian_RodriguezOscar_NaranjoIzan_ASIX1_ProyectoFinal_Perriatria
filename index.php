@@ -29,15 +29,21 @@ session_start();
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" href="./index.php">Inicio</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="./view/mascotas.php">Mascotas</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="./view/veterinarios.php">Veterinarios</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="./view/mascotas_veterinario.php">Pacientes</a>
-      </li>
+    <?php if (isset($_SESSION['rol']) && in_array($_SESSION['rol'], ['admin', 'propietario'])): ?>
+        <li class="nav-item">
+          <a class="nav-link" href="./view/mascotas.php">Mascotas</a>
+        </li>
+    <?php endif; ?>
+      <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+        <li class="nav-item">
+          <a class="nav-link" href="./view/veterinarios.php">Veterinarios</a>
+        </li>
+      <?php endif; ?>
+      <?php if (isset($_SESSION['rol']) && in_array($_SESSION['rol'], ['admin', 'veterinario'])): ?>
+        <li class="nav-item">
+          <a class="nav-link" href="./view/mascotas_veterinario.php">Pacientes</a>
+        </li>
+      <?php endif; ?>
     </div>
     <div class="nav-right">
       <li class="nav-item">
@@ -100,19 +106,23 @@ session_start();
     </section>
   </main>
   <div class="logo-background"></div>
+
   <?php if (isset($_SESSION['usuario'])): ?>
-      <div class="user-panel">
-          <span>Bienvenido, <?php echo $_SESSION['usuario']; ?></span>
-          <form action="./processes/logout.proc.php" method="post">
-              <button type="submit">Cerrar sesión</button>
-          </form>
-      </div>
+    <div class="user-panel mt-3 text-center">
+      <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
+      <form action="./processes/logout.proc.php" method="post" class="d-inline ms-2">
+        <button type="submit" class="btn btn-outline-secondary btn-sm">Cerrar sesión</button>
+      </form>
+    </div>
   <?php endif; ?>
+  </main>
+
   <div class="scroll-top-panel">
       <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Volver arriba</button>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+
 <footer class="footer">
   <p>&copy; 2023 Perriatria Veterinario. Todos los derechos reservados.</p>
 </footer>

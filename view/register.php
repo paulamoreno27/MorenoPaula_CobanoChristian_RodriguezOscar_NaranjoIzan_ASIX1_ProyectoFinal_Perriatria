@@ -8,7 +8,7 @@ session_start(); // Asegúrate de que la sesión esté iniciada para acceder a l
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
-    <script src="../js/script_register.js"></script>
+    <script src="../js/validaciones.js"></script>
     <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
 </head>
 <body>    

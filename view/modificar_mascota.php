@@ -38,7 +38,7 @@ mysqli_stmt_close($stmt);
   <title>Modificar Mascota</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../css/styles.css" />
-  <script src="../js/script_modificar.js"></script>
+  <script src="../js/validaciones.js"></script>
   <script>
     const razasPorEspecie = {
     <?php
@@ -92,7 +92,7 @@ mysqli_stmt_close($stmt);
                 class="form-control" 
                 value="<?php echo htmlspecialchars($mascota['nombre_mascota']); ?>" 
                 required 
-                onblur="valNombre()" />
+                onblur="valNombreMascota()" />
             <p id="nombreError" class="mensaje-error"></p>
         </div>
 
@@ -105,7 +105,7 @@ mysqli_stmt_close($stmt);
                 class="form-control" 
                 value="<?php echo htmlspecialchars($mascota['fecha_nacimiento_mascota']); ?>" 
                 required 
-                onblur="valFechaNacimiento()" />
+                onblur="valNacimientoMascota()" />
             <p id="fechaNacimientoError" class="mensaje-error"></p>
         </div>
 
@@ -126,7 +126,7 @@ mysqli_stmt_close($stmt);
 
         <div class="mb-3">
             <label for="id_especie_mascota" class="form-label fw-bold">Especie:</label>
-            <select id="id_especie_mascota" name="id_especie_mascota" class="form-select" onchange="cargarRazas()" required>
+            <select id="id_especie_mascota" name="id_especie_mascota" class="form-select" onchange="cargarRazas()" onblur="valEspecieMascota()">
                 <option value="">Seleccione una especie</option>
                 <?php
                 $sql = "SELECT id_especie, nombre_especie FROM especie";

@@ -1,67 +1,82 @@
-<?php 
+<?php
 session_start();
-require '../services/connection.php';
 
-if (!isset($_SESSION['id_propietario']) && (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin')) {
-    $_SESSION['error'] = "Solo propietarios o administradores pueden acceder a esta página.";
+if (!isset($_SESSION['rol'])) {
+    $_SESSION['error'] = "Debes iniciar sesión para acceder a esta página.";
     header("Location: ./login.php");
     exit();
 }
 
+require '../services/connection.php';
 
-$where = [];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($conn)) {
+        $_SESSION['error'] = "Error de conexión con la base de datos.";
+        header("Location: ../view/login.php");
+        exit();
+    }
 
-if (isset($_SESSION['id_propietario']) && (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin')) {
-    $id_propietario = (int)$_SESSION['id_propietario'];
-    $where[] = "id_propietario = $id_propietario";
+    $usuario = trim($_POST['usuario']);
+    $password = $_POST['password'];
+
+    if (empty($usuario) || empty($password)) {
+        $_SESSION['error'] = "Todos los campos son obligatorios.";
+        header("Location: ../view/login.php");
+        exit();
+    }
+
+    // Verificamos en la tabla `usuarios` (admin u otros roles permitidos)
+    $query_admin = "SELECT id_usuario, password, rol_usuario FROM usuarios WHERE username = ?";
+    $stmt_admin = mysqli_prepare($conn, $query_admin);
+    mysqli_stmt_bind_param($stmt_admin, "s", $usuario);
+    mysqli_stmt_execute($stmt_admin);
+    $result_admin = mysqli_stmt_get_result($stmt_admin);
+
+    if ($result_admin && mysqli_num_rows($result_admin) > 0) {
+        $row = mysqli_fetch_assoc($result_admin);
+        $hash = $row['password'];
+
+        if (password_verify($password, $hash)) {
+            $_SESSION['id_usuario'] = $row['id_usuario'];
+            $_SESSION['usuario'] = $usuario;
+            $_SESSION['rol'] = $row['rol_usuario'];
+
+            header("Location: ../index.php");
+            exit();
+        } else {
+            $_SESSION['error'] = "Contraseña incorrecta.";
+        }
+        mysqli_stmt_close($stmt_admin);
+    } else {
+        // Verificamos si es propietario
+        $query_propietario = "SELECT id_propietario, contraseña_propietario FROM propietario WHERE nombre_propietario = ?";
+        $stmt_prop = mysqli_prepare($conn, $query_propietario);
+        mysqli_stmt_bind_param($stmt_prop, "s", $usuario);
+        mysqli_stmt_execute($stmt_prop);
+        $result_prop = mysqli_stmt_get_result($stmt_prop);
+
+        if ($result_prop && mysqli_num_rows($result_prop) > 0) {
+            $row = mysqli_fetch_assoc($result_prop);
+            if (password_verify($password, $row['contraseña_propietario'])) {
+                $_SESSION['id_propietario'] = $row['id_propietario'];
+                $_SESSION['usuario'] = $usuario;
+                $_SESSION['rol'] = 'propietario';
+
+                header("Location: ../index.php");
+                exit();
+            } else {
+                $_SESSION['error'] = "Contraseña incorrecta.";
+            }
+            mysqli_stmt_close($stmt_prop);
+        } else {
+            $_SESSION['error'] = "El usuario no existe.";
+        }
+    }
+
+    mysqli_close($conn);
+    header("Location: ../view/login.php");
+    exit();
 }
-
-
-// Aplicar filtros de GET como antes
-if (!empty($_GET['filtro-sexo'])) {
-    $sexo = mysqli_real_escape_string($conn, $_GET['filtro-sexo']);
-    $where[] = "sexo_mascota = '$sexo'";
-}
-
-if (!empty($_GET['filtro-especie'])) {
-    $id_especie = (int)$_GET['filtro-especie'];
-    $where[] = "m.id_especie_mascota = $id_especie";
-}
-
-if (!empty($_GET['filtro-raza'])) {
-    $id_raza = (int)$_GET['filtro-raza'];
-    $where[] = "m.id_raza_mascota = $id_raza";
-}
-
-$condiciones = implode(" AND ", $where);
-if (empty($condiciones)) {
-    $condiciones = "1"; // Para que la consulta sea válida y traiga todo
-}
-
-// Consulta igual que antes
-$sql = "SELECT 
-          m.chip_mascota,
-          m.nombre_mascota,
-          m.fecha_nacimiento_mascota,
-          p.nombre_propietario,
-          m.sexo_mascota,
-          e.nombre_especie AS especie,
-          r.raza_nombre AS raza,
-          v.nombre_veterinario,
-          m.foto_mascota
-        FROM mascota m
-        JOIN propietario p ON m.id_propietario = p.id_propietario
-        JOIN especie e ON m.id_especie_mascota = e.id_especie
-        JOIN raza r ON m.id_raza_mascota = r.id_raza
-        JOIN veterinario v ON m.id_veterinario_mascota = v.id_veterinario
-        WHERE $condiciones
-        ORDER BY m.fecha_registro_mascota DESC";
-
-$result = mysqli_query($conn, $sql);
-if (!$result) {
-    die("Error en la consulta: " . mysqli_error($conn));
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -91,12 +106,16 @@ if (!$result) {
       <li class="nav-item">
         <a class="nav-link" href="./mascotas.php">Mascotas</a>
       </li>
+    <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
       <li class="nav-item">
         <a class="nav-link" href="./veterinarios.php">Veterinarios</a>
       </li>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['rol']) && in_array($_SESSION['rol'], ['admin', 'veterinario'])): ?>
       <li class="nav-item">
         <a class="nav-link" href="./mascotas_veterinario.php">Pacientes</a>
       </li>
+    <?php endif; ?>
     </div>
     <div class="nav-right">
       <li class="nav-item">
@@ -116,6 +135,51 @@ if (!$result) {
     <div class="alert alert-success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
   <?php endif; ?>
 </div>
+  <?php
+    // CONSULTA dinámica de mascotas según el rol
+    $filtroSexo = $_GET['filtro-sexo'] ?? '';
+    $filtroEspecie = $_GET['filtro-especie'] ?? '';
+    $filtroRaza = $_GET['filtro-raza'] ?? '';
+
+    $condiciones = [];
+    if ($filtroSexo !== '') {
+        $condiciones[] = "m.sexo_mascota = '" . mysqli_real_escape_string($conn, $filtroSexo) . "'";
+    }
+    if ($filtroEspecie !== '') {
+        $condiciones[] = "m.id_especie_mascota = " . intval($filtroEspecie);
+    }
+    if ($filtroRaza !== '') {
+        $condiciones[] = "m.id_raza_mascota = " . intval($filtroRaza);
+    }
+
+    // Filtro de propietario si no es admin
+    if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'propietario') {
+        $condiciones[] = "m.id_propietario = " . intval($_SESSION['id_propietario']);
+    }
+
+    $where = '';
+    if (!empty($condiciones)) {
+        $where = 'WHERE ' . implode(' AND ', $condiciones);
+    }
+
+    $query = "
+        SELECT m.*, 
+              e.nombre_especie AS especie,
+              r.raza_nombre AS raza,
+              v.nombre_veterinario,
+              p.nombre_propietario
+        FROM mascota m
+        LEFT JOIN especie e ON m.id_especie_mascota = e.id_especie
+        LEFT JOIN raza r ON m.id_raza_mascota = r.id_raza
+        LEFT JOIN veterinario v ON m.id_veterinario_mascota = v.id_veterinario
+        LEFT JOIN propietario p ON m.id_propietario = p.id_propietario
+        $where
+        ORDER BY m.nombre_mascota ASC
+    ";
+
+    $result = mysqli_query($conn, $query);
+    ?>
+
 
 <main>
   <section class="container">
@@ -173,8 +237,8 @@ if (!$result) {
 
     <!-- Tabla -->
     <div class="table-responsive">
-      <table class="table table-striped table-hover align-middle mascotas-table">
-        <thead class="table-success">
+      <table class="table table-striped table-hover align-middle mascotas-table table-responsive">
+        <thead class="table-success table mascotas-table">
           <tr>
             <th>Foto</th>
             <th>Nombre</th>
@@ -201,13 +265,13 @@ if (!$result) {
                 </td>
                 <td><?php echo htmlspecialchars($mascota['nombre_mascota']); ?></td>
                 <td><?php echo htmlspecialchars($mascota['fecha_nacimiento_mascota']); ?></td>
-                <td><?php echo htmlspecialchars($mascota['nombre_propietario']); ?></td>
+                <td><?php echo htmlspecialchars($mascota['nombre_propietario'] ?? ''); ?></td>
                 <td><?php echo htmlspecialchars($mascota['nombre_veterinario'] ?? 'Sin asignar'); ?></td>
                 <td><?php echo ($mascota['sexo_mascota'] === 'M') ? 'Macho' : 'Hembra'; ?></td>
                 <td><?php echo htmlspecialchars($mascota['especie']); ?></td>
                 <td><?php echo htmlspecialchars($mascota['raza']); ?></td>
                 <td><a href="../view/modificar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
-                <td><a href="../processes/eliminar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
+                <td><a href="../processes/eliminar_mascota.php?chip_mascota=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
               </tr>
             <?php endwhile; ?>
           <?php else: ?>

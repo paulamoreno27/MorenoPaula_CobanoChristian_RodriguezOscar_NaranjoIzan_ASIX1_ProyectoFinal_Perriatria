@@ -28,6 +28,7 @@ $result = mysqli_query($conn, $sql);
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../js/validaciones.js" />
   <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
   <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">

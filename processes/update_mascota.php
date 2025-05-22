@@ -131,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['chip'], $_POST['nombre
         if ($origen) {
             $ancho_orig = imagesx($origen);
             $alto_orig = imagesy($origen);
-            $nuevo = imagecreatetruecolor(100, 100);
-            imagecopyresampled($nuevo, $origen, 0, 0, 0, 0, 100, 100, $ancho_orig, $alto_orig);
+            $nuevo = imagecreatetruecolor(75, 75);
+            imagecopyresampled($nuevo, $origen, 0, 0, 0, 0, 75, 100, $ancho_orig, $alto_orig);
             imagejpeg($nuevo, $destino, 85); // Guarda como JPG
             imagedestroy($origen);
             imagedestroy($nuevo);

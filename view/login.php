@@ -9,7 +9,7 @@ session_start();
     <title>Login</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
-    <script src="../js/script_login.js"></script> 
+    <script src="../js/validaciones.js"></script> 
 </head>
 <body>
     <div>
@@ -43,15 +43,15 @@ session_start();
             <form action="../processes/login.proc.php" method="POST">
 
             <label for="nombre" class="subtitulos">Usuario:</label>
-            <input type="text" id="usuario" name="usuario" onblur="valUsuario()" class="camposrellenar" required>
+            <input type="text" id="usuario" name="usuario" onblur="valLogUsuario()" class="camposrellenar" required>
             <p id="nombreError" class="mensaje-error"></p>
 
             <label for="email" class="subtitulos">Email:</label>
-            <input type="email" id="email" name="email" onblur="valEmail()" class="camposrellenar" required>
+            <input type="email" id="email" name="email" onblur="valLogEmail()" class="camposrellenar" required>
             <p id="emailError" class="mensaje-error"></p>
 
             <label for="password" class="subtitulos">Contraseña:</label>
-            <input type="password" id="password" name="password" onblur="valPassword()" class="camposrellenar" required>
+            <input type="password" id="password" name="password" onblur="valLogPassword()" class="camposrellenar" required>
             <p id="passwordError" class="mensaje-error"></p>
 
             <input class="btn" type="submit" value="Entrar">

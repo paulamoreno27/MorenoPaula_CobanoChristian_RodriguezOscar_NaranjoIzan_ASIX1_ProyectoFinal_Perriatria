@@ -77,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($origen) {
             $ancho_orig = imagesx($origen);
             $alto_orig = imagesy($origen);
-            $nuevo = imagecreatetruecolor(50, 50);
-            imagecopyresampled($nuevo, $origen, 0, 0, 0, 0, 50, 50, $ancho_orig, $alto_orig);
+            $nuevo = imagecreatetruecolor(7, 75);
+            imagecopyresampled($nuevo, $origen, 0, 0, 0, 0, 75, 75, $ancho_orig, $alto_orig);
             imagejpeg($nuevo, $destino, 85); // Se guarda sobre el mismo archivo
             imagedestroy($origen);
             imagedestroy($nuevo);

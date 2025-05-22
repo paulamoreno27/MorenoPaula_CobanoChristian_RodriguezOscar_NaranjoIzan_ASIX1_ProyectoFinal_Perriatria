@@ -25,7 +25,7 @@ if (isset($_GET['chip'])) {
     <title>Registrar Mascota</title>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
     <link rel="icon" href="../resources/logo_perriatria.png" type="image/x-icon">
-    <script src="../js/script_mascotas.js"></script>
+    <script src="../js/validaciones.js"></script>
     <script>
         // Diccionario con las razas agrupadas por especie
         const razasPorEspecie = {

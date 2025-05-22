@@ -1,115 +1,136 @@
-// Función para cambiar el color del mensaje de error a rojo
-function mostrarError(elemento, mensaje) {
-    elemento.textContent = mensaje;
-    elemento.style.color = "red";  // Cambia el color a rojo
+function mostrarError(id, mensaje) 
+{
+    document.getElementById(id).innerText = mensaje;
+    document.getElementById(id).style.color = "red";
 }
 
-function limpiarError(id, inputId) {
+function limpiarError(id) 
+{
     document.getElementById(id).innerText = "";
-    document.getElementById(inputId).style.backgroundColor = "rgba(105, 227, 134, 0.44)"; // Verde
 }
-// Función para validar el usuario
-function validarUsuario() {
-    let usuario = document.getElementById("usuario").value.trim();
-    let errorUsuario = document.getElementById("error_usuario");
 
-    if (usuario.length < 3) {
-        mostrarError(errorUsuario, "El usuario debe tener al menos 3 caracteres.");
-        return false;
+function valUsuario()
+{
+    let usuario = document.getElementById("usuario").value;
+    if(usuario == "") 
+    {
+        mostrarError("error_usuario", "Este campo es obligatorio");
+        document.getElementById("usuario").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
+    }else if(usuario.length < 3) 
+    {
+        mostrarError("error_usuario", "Tiene que tener al menos 3 caracteres");
+        document.getElementById("usuario").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
-
-    errorUsuario.textContent = "";
-    return true;
+    else
+    {
+        document.getElementById("usuario").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("error_usuario");
+    }
 }
+
 
 // Función para validar el email
-function validarEmail() {
-    let email = document.getElementById("email").value.trim();
-    let errorMensaje = document.getElementById("error_email");
-
-    // Expresión regular para validar email
-    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    errorMensaje.textContent = "";
-
-    if (email.length === 0) {
-        mostrarError(errorMensaje, "El campo no puede estar vacío.");
-        return false;
+function valEmail()
+{
+    let email = document.getElementById("email").value;
+    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
+    if(email == "") 
+    {
+        mostrarError("error_email", "El email es obligatorio");
+        document.getElementById("email").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
-    if (!emailRegex.test(email)) {
-        mostrarError(errorMensaje, "El formato del email no es válido.");
-        return false;
+    else if(!regex.test(email))
+    {
+        mostrarError("error_email", "Introduce un email válido");
+        document.getElementById("email").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
-
-    errorMensaje.textContent = "";
-    return true;
+    else 
+    {
+        document.getElementById("email").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("error_email");
+    }
 }
 
 // Función para validar la contraseña
-function validarPassword() {
-    let password = document.getElementById("password").value.trim();
-    let errorPassword = document.getElementById("error_password");
-
-    if (password.length < 8) {
-        mostrarError(errorPassword, "La contraseña debe tener al menos 8 caracteres.");
-        return false;
+function valPassword()
+{
+    let passUser = document.getElementById("password").value;
+    let regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if(passUser == "") 
+    {
+        mostrarError("error_password", "La contraseña es obligatoria");
+        document.getElementById("password").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
-    if (password === password.toLowerCase()) {
-        alert("La contraseña debe contener al menos una letra mayúscula.");
-        return false;
+    else if(!regex.test(passUser))
+    {
+        mostrarError("error_password", "Mínimo 8 caracteres, 1 número y 1 mayúscula");
+        document.getElementById("password").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
-    errorPassword.textContent = "";
-    return true;
+    else 
+    {
+        document.getElementById("password").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("error_password");
+    }
 }
 
 // Función para validar la confirmación de contraseña
 function validarConfirmPassword() {
-    let confirmPassword = document.getElementById("confirm_password").value.trim();
+    let confirmPassword = document.getElementById("confirm_password").value;
     let errorConfirmPassword = document.getElementById("error_confirm_password");
-    let password = document.getElementById("password").value.trim();
+    let password = document.getElementById("password").value;
 
-    if (confirmPassword !== password) {
-        mostrarError(errorConfirmPassword, "Las contraseñas no coinciden.");
-        return false;
+    if(confirmPassword == "") 
+    {
+        mostrarError("error_confirm_password", "Este campo es obligatorio");
+        document.getElementById("confirm_password").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     }
-    errorConfirmPassword.textContent = "";
-    return true;
+
+    else if (confirmPassword !== password) {
+        mostrarError("error_confirm_password", "Las contraseñas no coinciden.");
+        document.getElementById("confirm_password").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
+    }
+    else 
+    {
+        document.getElementById("confirm_password").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("error_confirm_password");
+    }
 }
 
 // Función para validar el teléfono
-function validarTelefono() {
-    let telefono = document.getElementById("telefono").value.trim();
-    let errorTelefono = document.getElementById("error_telefono");
-
-    // Teléfono: exactamente 9 dígitos
-    let telefonoRegex = /^\d{9}$/;
-
-    errorTelefono.textContent = "";
+function valTelefono() {
+    let telefono = document.getElementById("telefono").value;
+    let regex = /^\d{9}$/;
 
     if (telefono.length === 0) {
-        mostrarError(errorTelefono, "El campo no puede estar vacío.");
-        return false;
-    }
-    if (!telefonoRegex.test(telefono)) {
-        mostrarError(errorTelefono, "El teléfono debe tener exactamente 9 dígitos numéricos.");
-        return false;
+        mostrarError("error_telefono", "El campo no puede estar vacío.");
+        document.getElementById("telefono").style.backgroundColor = "rgba(227, 105, 105, 0.44)"; // Rojo
     }
 
-    return true;
+    else if (!regex.test(telefono)) {
+        mostrarError("error_telefono", "El teléfono debe tener exactamente 9 dígitos numéricos.");
+        document.getElementById("telefono").style.backgroundColor = "rgba(227, 105, 105, 0.44)"; // Rojo
+    } 
+    else 
+    {
+        document.getElementById("telefono").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("error_telefono");
+    }
 }
 
 // Función para validar la dirección
 function validarDireccion() {
-    let direccion = document.getElementById("direccion").value.trim();
+    let direccion = document.getElementById("direccion").value;
     let errorDireccion = document.getElementById("error_direccion");
-
     errorDireccion.textContent = "";
 
     if (direccion.length < 5) {
-        mostrarError(errorDireccion, "La dirección debe tener al menos 5 caracteres.");
+        mostrarError("error_direccion", "La dirección debe tener al menos 5 caracteres.");
         document.getElementById("direccion").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
-        return false;
+    }
+    else 
+    {
+        document.getElementById("direccion").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("error_direccion");       
     }
 
-    return true;
 }

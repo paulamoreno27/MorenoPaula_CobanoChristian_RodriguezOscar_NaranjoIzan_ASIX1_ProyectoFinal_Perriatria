@@ -102,7 +102,7 @@ if (isset($_GET['chip'])) {
             <p id="sexoError" class="mensaje-error"></p>
 
             <label for="id_especie_mascota" class="subtitulos">Especie:</label>
-            <select id="id_especie_mascota" name="id_especie_mascota" class="camposrellenar" onchange="cargarRazas()" >
+            <select id="id_especie_mascota" name="id_especie_mascota" class="camposrellenar" onblur="valEspecieMascota()" onchange="cargarRazas()" >
                 <option value="">Seleccione una especie</option>
                 <?php
                 $sql = "SELECT id_especie, nombre_especie FROM especie";
@@ -112,16 +112,16 @@ if (isset($_GET['chip'])) {
                 }
                 ?>
             </select>
-            <p id="especieError" class="mensaje-error"></p>
+            <p id="especie_mascota_error" class="mensaje-error"></p>
 
             <label for="id_raza_mascota" class="subtitulos">Raza:</label>
-            <select id="id_raza_mascota" name="id_raza_mascota" class="camposrellenar" >
+            <select id="id_raza_mascota" name="id_raza_mascota" onblur="valRazaMascota()" class="camposrellenar" >
                 <option value="">Seleccione una raza</option>
             </select>
             <p id="razaError" class="mensaje-error"></p>
   
         <label for="veterinario" class="subtitulos">Veterinario asignado:</label>
-        <select id="veterinario" name="veterinario" class="camposrellenar" >
+        <select id="veterinario" name="veterinario" onblur="valVeterinario()" class="camposrellenar">
             <option value="">Seleccione un veterinario</option>
             <?php
             $result = mysqli_query($conn, "SELECT id_veterinario, nombre_veterinario FROM veterinario");

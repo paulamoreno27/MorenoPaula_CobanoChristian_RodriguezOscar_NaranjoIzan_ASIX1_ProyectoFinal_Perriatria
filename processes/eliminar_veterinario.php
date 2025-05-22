@@ -2,15 +2,17 @@
 session_start();
 require '../services/connection.php';
 
-// Comprobar que el usuario está logueado (puedes cambiar la validación según el rol que administre veterinarios)
-if (!isset($_SESSION['id_propietario'])) {
+// CORRECTO: Solo permite acceso a veterinarios logueados
+if (!isset($_SESSION['id_veterinario'])) {
+    $_SESSION['error'] = "Debes iniciar sesión como Veterinario para realizar esta acción.";
     header("Location: ../view/login.php");
     exit();
 }
 
 // Comprobar que se recibe el parámetro 'id_veterinario' y es numérico
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $id_veterinario = intval($_GET['id']);
+if (isset($_GET['id_veterinario']) && is_numeric($_GET['id_veterinario'])) {
+    $id_veterinario = intval($_GET['id_veterinario']);
+
 
     // Verificar que el veterinario existe
     $sql_check = "SELECT id_veterinario FROM veterinario WHERE id_veterinario = ?";

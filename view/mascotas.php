@@ -2,19 +2,20 @@
 session_start();
 require '../services/connection.php';
 
-if (!isset($_SESSION['id_propietario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión como propietario para ver las mascotas.";
+if (!isset($_SESSION['id_propietario']) && (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin')) {
+    $_SESSION['error'] = "Solo propietarios o administradores pueden acceder a esta página.";
     header("Location: ./login.php");
     exit();
 }
 
+
 $where = [];
 
-// Si es propietario, filtro por su ID
-if (isset($_SESSION['id_propietario'])) {
+if (isset($_SESSION['id_propietario']) && (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin')) {
     $id_propietario = (int)$_SESSION['id_propietario'];
     $where[] = "id_propietario = $id_propietario";
 }
+
 
 // Aplicar filtros de GET como antes
 if (!empty($_GET['filtro-sexo'])) {
@@ -42,12 +43,14 @@ $sql = "SELECT
           m.chip_mascota,
           m.nombre_mascota,
           m.fecha_nacimiento_mascota,
+          p.nombre_propietario,
           m.sexo_mascota,
           e.nombre_especie AS especie,
           r.raza_nombre AS raza,
           v.nombre_veterinario,
           m.foto_mascota
         FROM mascota m
+        JOIN propietario p ON m.id_propietario = p.id_propietario
         JOIN especie e ON m.id_especie_mascota = e.id_especie
         JOIN raza r ON m.id_raza_mascota = r.id_raza
         JOIN veterinario v ON m.id_veterinario_mascota = v.id_veterinario
@@ -198,7 +201,7 @@ if (!$result) {
                 </td>
                 <td><?php echo htmlspecialchars($mascota['nombre_mascota']); ?></td>
                 <td><?php echo htmlspecialchars($mascota['fecha_nacimiento_mascota']); ?></td>
-                <td><?php echo htmlspecialchars($_SESSION['usuario']); ?></td>
+                <td><?php echo htmlspecialchars($mascota['nombre_propietario']); ?></td>
                 <td><?php echo htmlspecialchars($mascota['nombre_veterinario'] ?? 'Sin asignar'); ?></td>
                 <td><?php echo ($mascota['sexo_mascota'] === 'M') ? 'Macho' : 'Hembra'; ?></td>
                 <td><?php echo htmlspecialchars($mascota['especie']); ?></td>

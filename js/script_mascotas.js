@@ -1,5 +1,5 @@
-function mostrarError(id, mensaje){
-    
+function mostrarError(id, mensaje) 
+{
     document.getElementById(id).innerText = mensaje;
     document.getElementById(id).style.color = "red";
 }
@@ -76,35 +76,37 @@ function valSexoMascota()
 
 function valRazaMascota()
 {
-    let raza = document.getElementById("raza").value;
+    let raza = document.getElementById("id_raza_mascota").value;
     if (raza === "") 
     {
         mostrarError("razaError", "La raza es obligatoria.");
-        document.getElementById("raza").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
+        document.getElementById("id_raza_mascota").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     } 
     else 
     {
-        document.getElementById("raza").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        document.getElementById("id_raza_mascota").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
         limpiarError("razaError");
     }
 }
+
 function valEspecieMascota()
 {
-    let especie = document.getElementById("especie").value;
-    if (especie === "") 
-    {
-        mostrarError("especieError", "La especie es obligatoria.");
-        document.getElementById("especie").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
+    let especie = document.getElementById("id_especie_mascota").value;
+    if (especie === "") {
+        mostrarError("especie_mascota_error", "La especie es obligatoria.");
+        document.getElementById("id_especie_mascota").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     } 
-    else 
-    {
-        document.getElementById("especie").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
-        limpiarError("especieError");
+    else {
+        document.getElementById("id_especie_mascota").style.backgroundColor = "rgba(105, 227, 134, 0.44)";
+        limpiarError("especie_mascota_error");
     }
-}function valveterinario() {
+}
+
+function valVeterinario() {
     let veterinario = document.getElementById("veterinario").value;
-    if (veterinario.length < 3) {
-        mostrarError("veterinarioError", "El nombre del veterinario debe tener al menos 3 caracteres.");
+
+    if (veterinario === "") {
+        mostrarError("veterinarioError", "Debe seleccionar un veterinario obligatoriamente.");
         document.getElementById("veterinario").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
     } else {
         document.getElementById("veterinario").style.backgroundColor = "rgba(105, 227, 134, 0.44)";

@@ -1,10 +1,8 @@
 <?php
 session_start();
-
 require '../services/connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") 
-{
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($conn)) {
         $_SESSION['error'] = "Error de conexión con la base de datos.";
         header("Location: ../view/login.php");
@@ -20,75 +18,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         exit();
     }
 
-    if (is_numeric($usuario)) {
-        $_SESSION['error'] = "El nombre no puede contener solo números.";
-        header("Location: ../view/login.php");
-        exit();
-    }
+    // Primero: Verificamos en la tabla `usuarios` (para rol admin u otros)
+    $query_admin = "SELECT id_usuario, password, rol_usuario FROM usuarios WHERE username = ?";
+    $stmt_admin = mysqli_prepare($conn, $query_admin);
+    mysqli_stmt_bind_param($stmt_admin, "s", $usuario);
+    mysqli_stmt_execute($stmt_admin);
+    $result_admin = mysqli_stmt_get_result($stmt_admin);
 
-    if (strlen($usuario) < 3) {
-        $_SESSION['error'] = "El nombre debe tener al menos 3 caracteres.";
-        header("Location: ../view/login.php");
-        exit();
-    }
-
-    if (strlen($password) < 6) {
-        $_SESSION['error'] = "La contraseña debe tener al menos 6 caracteres.";
-        header("Location: ../view/login.php");
-        exit();
-    }
-
-    // Verificar si el usuario es un propietario
-    $query_propietario = "SELECT id_propietario, contraseña_propietario FROM propietario WHERE nombre_propietario = ?";
-    $stmt_propietario = mysqli_prepare($conn, $query_propietario);
-    mysqli_stmt_bind_param($stmt_propietario, "s", $usuario);
-    mysqli_stmt_execute($stmt_propietario);
-    $result_propietario = mysqli_stmt_get_result($stmt_propietario);
-
-    if ($result_propietario && mysqli_num_rows($result_propietario) > 0) {
-        $row = mysqli_fetch_assoc($result_propietario);
-        $hash = $row['contraseña_propietario'];
+    if ($result_admin && mysqli_num_rows($result_admin) > 0) {
+        $row = mysqli_fetch_assoc($result_admin);
+        $hash = $row['password'];
 
         if (password_verify($password, $hash)) {
-            $_SESSION['id_propietario'] = $row['id_propietario'];
+            $_SESSION['id_usuario'] = $row['id_usuario'];
             $_SESSION['usuario'] = $usuario;
+            $_SESSION['rol'] = $row['rol_usuario']; // Muy importante
 
             header("Location: ../index.php");
             exit();
         } else {
             $_SESSION['error'] = "Contraseña incorrecta.";
         }
+        mysqli_stmt_close($stmt_admin);
     } else {
-        // Verificar si el usuario es un veterinario
-        $query_veterinario = "SELECT id_veterinario, contraseña_veterinario FROM veterinario WHERE nombre_veterinario = ?";
-        $stmt_veterinario = mysqli_prepare($conn, $query_veterinario);
-        mysqli_stmt_bind_param($stmt_veterinario, "s", $usuario);
-        mysqli_stmt_execute($stmt_veterinario);
-        $result_veterinario = mysqli_stmt_get_result($stmt_veterinario);
+        // Segundo: Verificar si es un propietario
+        $query_propietario = "SELECT id_propietario, contraseña_propietario FROM propietario WHERE nombre_propietario = ?";
+        $stmt_prop = mysqli_prepare($conn, $query_propietario);
+        mysqli_stmt_bind_param($stmt_prop, "s", $usuario);
+        mysqli_stmt_execute($stmt_prop);
+        $result_prop = mysqli_stmt_get_result($stmt_prop);
 
-        if ($result_veterinario && mysqli_num_rows($result_veterinario) > 0) {
-            $row = mysqli_fetch_assoc($result_veterinario);
-            $hash = $row['contraseña_veterinario'];
-
-            if (password_verify($password, $hash)) {
-                $_SESSION['id_veterinario'] = $row['id_veterinario'];
+        if ($result_prop && mysqli_num_rows($result_prop) > 0) {
+            $row = mysqli_fetch_assoc($result_prop);
+            if (password_verify($password, $row['contraseña_propietario'])) {
+                $_SESSION['id_propietario'] = $row['id_propietario'];
                 $_SESSION['usuario'] = $usuario;
+                $_SESSION['rol'] = 'propietario';
 
                 header("Location: ../index.php");
                 exit();
             } else {
                 $_SESSION['error'] = "Contraseña incorrecta.";
             }
+            mysqli_stmt_close($stmt_prop);
         } else {
-            $_SESSION['error'] = "El usuario no existe.";
-        }
+            // Tercero: Verificar si es veterinario
+            $query_vet = "SELECT id_veterinario, contraseña_veterinario FROM veterinario WHERE nombre_veterinario = ?";
+            $stmt_vet = mysqli_prepare($conn, $query_vet);
+            mysqli_stmt_bind_param($stmt_vet, "s", $usuario);
+            mysqli_stmt_execute($stmt_vet);
+            $result_vet = mysqli_stmt_get_result($stmt_vet);
 
-        mysqli_stmt_close($stmt_veterinario);
+            if ($result_vet && mysqli_num_rows($result_vet) > 0) {
+                $row = mysqli_fetch_assoc($result_vet);
+                if (password_verify($password, $row['contraseña_veterinario'])) {
+                    $_SESSION['id_veterinario'] = $row['id_veterinario'];
+                    $_SESSION['usuario'] = $usuario;
+                    $_SESSION['rol'] = 'veterinario';
+
+                    header("Location: ../index.php");
+                    exit();
+                } else {
+                    $_SESSION['error'] = "Contraseña incorrecta.";
+                }
+                mysqli_stmt_close($stmt_vet);
+            } else {
+                $_SESSION['error'] = "El usuario no existe.";
+            }
+        }
     }
 
-    mysqli_stmt_close($stmt_propietario);
     mysqli_close($conn);
-
     header("Location: ../view/login.php");
     exit();
 }

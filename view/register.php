@@ -35,15 +35,15 @@ session_start(); // Asegúrate de que la sesión esté iniciada para acceder a l
             <form method="post" action="../processes/insert_register.php" onsubmit="return ValidarFormularioRegistro()">
 
                 <label for="email" class="subtitulos">Email:</label>
-                <input name="email" type="email" id="email" onblur="validarEmail()" class="camposrellenar" required>
+                <input name="email" type="email" id="email" onblur="valEmail()" class="camposrellenar" required>
                 <p id="error_email" class="mensaje-error"></p>
 
                 <label for="usuario" class="subtitulos">Usuario:</label>
-                <input id="usuario" name="usuario" onblur="validarUsuario()" class="camposrellenar" required>
+                <input id="usuario" name="usuario" onblur="valUsuario()" class="camposrellenar" required>
                 <p id="error_usuario" class="mensaje-error"></p>
 
                 <label for="telefono" class="subtitulos">Teléfono:</label>
-                <input name="telefono" type="tel" id="telefono" onblur="validarTelefono()" class="camposrellenar" required>
+                <input name="telefono" type="tel" id="telefono" onblur="valTelefono()" class="camposrellenar" required>
                 <p id="error_telefono" class="mensaje-error"></p>
 
                 <label for="direccion" class="subtitulos">Dirección:</label>
@@ -51,7 +51,7 @@ session_start(); // Asegúrate de que la sesión esté iniciada para acceder a l
                 <p id="error_direccion" class="mensaje-error"></p>
 
                 <label for="password" class="subtitulos">Contraseña:</label>
-                <input type="password" id="password" name="password" onblur="validarPassword()" class="camposrellenar" required>
+                <input type="password" id="password" name="password" onblur="valPassword()" class="camposrellenar" required>
                 <p id="error_password" class="mensaje-error"></p>
 
                 <label for="confirm_password" class="subtitulos">Confirmar Contraseña:</label>

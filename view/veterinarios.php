@@ -3,13 +3,11 @@ session_start();
 require '../services/connection.php';
 
 // Verificar que solo pueda entrar el admin
-if (!isset($_SESSION['id_veterinario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión como Veterinario para ver los veterinarios de nuestro centro.";
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+    $_SESSION['error'] = "Solo los administradores pueden acceder a esta página.";
     header("Location: ./login.php");
     exit();
 }
-
-$id_veterinario = $_SESSION['id_veterinario'];
 
 // Construir la consulta con filtro
 $where = "1=1";
@@ -119,7 +117,7 @@ $result = mysqli_query($conn, $sql);
                 <td><?= htmlspecialchars($vet['telefono_veterinario']) ?></td>
                 <td><?= htmlspecialchars($vet['email_veterinario']) ?></td>
                 <td><?= htmlspecialchars($vet['especialidad_veterinario']) ?></td>
-                <td><?= htmlspecialchars(number_format($vet['salario_veterinario'], 2)) ?></td>
+                <td><?= htmlspecialchars(number_format($vet['salario_veterinario'], 2, ',', '.')) ?> €</td>
                 <td><a href="../view/modificar_veterinario.php?id_veterinario=<?= $vet['id_veterinario']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
                 <td><a href="../processes/eliminar_veterinario.php?id_veterinario=<?= $vet['id_veterinario']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar este veterinario?');">Borrar</a></td>
               </tr>

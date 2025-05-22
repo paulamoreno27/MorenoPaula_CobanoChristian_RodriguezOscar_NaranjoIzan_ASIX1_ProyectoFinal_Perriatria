@@ -9,9 +9,9 @@ if (!isset($_SESSION['id_propietario'])) {
 
 $id_propietario = $_SESSION['id_propietario'];
 
-// Comprobar que se recibe el parámetro 'chip' y es numérico
-if (isset($_GET['chip']) && is_numeric($_GET['chip'])) {
-    $chip = intval($_GET['chip']);
+// Comprobar que se recibe el parámetro 'chip'
+if (isset($_GET['chip_mascota'])) {
+    $chip = intval($_GET['chip_mascota']);
 
     // Verificar que la mascota pertenece al propietario
     $sql_check = "SELECT chip_mascota FROM mascota WHERE chip_mascota = ? AND id_propietario = ?";

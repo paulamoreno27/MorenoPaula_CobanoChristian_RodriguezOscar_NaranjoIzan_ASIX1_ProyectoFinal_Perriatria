@@ -2,8 +2,8 @@
 session_start();
 require '../services/connection.php';
 
-if (!isset($_SESSION['id_propietario']) && (!isset($_SESSION['rol']) || strtolower($_SESSION['rol']) !== 'admin')) {
-    $_SESSION['error'] = "Debes iniciar sesión para ver las mascotas.";
+if (!isset($_SESSION['id_propietario'])) {
+    $_SESSION['error'] = "Debes iniciar sesión como propietario para ver las mascotas.";
     header("Location: ./login.php");
     exit();
 }
@@ -80,18 +80,30 @@ if (!$result) {
       <img src="../resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
     </div>
 </header>
-<!-- Barra de navegación -->
-<ul class="nav nav-tabs custom-navbar w-100">
-  <div class="nav-left">
-    <li class="nav-item"><a class="nav-link active" href="../index.php">Inicio</a></li>
-    <li class="nav-item"><a class="nav-link" href="./mascotas.php">Mascotas</a></li>
-    <li class="nav-item"><a class="nav-link" href="./veterinarios.php">Veterinarios</a></li>
-  </div>
-  <div class="nav-right">
-    <li class="nav-item"><a class="nav-link" href="./login.php">Iniciar sesión</a></li>
-    <li class="nav-item"><a class="nav-link" href="./register.php">Darse de alta</a></li>
-  </div>
-</ul>
+  <ul class="nav nav-tabs custom-navbar w-100">
+    <div class="nav-left">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="../index.php">Inicio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./mascotas.php">Mascotas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./veterinarios.php">Veterinarios</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./mascotas_veterinario.php">Pacientes</a>
+      </li>
+    </div>
+    <div class="nav-right">
+      <li class="nav-item">
+        <a class="nav-link" href="./login.php">Iniciar sesión</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./register.php">Darse de alta</a>
+      </li>
+    </div>
+  </ul>
 
 <div class="container mt-3">
   <?php if (isset($_SESSION['error'])): ?>
@@ -192,7 +204,7 @@ if (!$result) {
                 <td><?php echo htmlspecialchars($mascota['especie']); ?></td>
                 <td><?php echo htmlspecialchars($mascota['raza']); ?></td>
                 <td><a href="../view/modificar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-warning btn-sm">Editar</a></td>
-                <td><a href="../process/eliminar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
+                <td><a href="../processes/eliminar_mascota.php?chip=<?php echo $mascota['chip_mascota']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar esta mascota?');">Borrar</a></td>
               </tr>
             <?php endwhile; ?>
           <?php else: ?>

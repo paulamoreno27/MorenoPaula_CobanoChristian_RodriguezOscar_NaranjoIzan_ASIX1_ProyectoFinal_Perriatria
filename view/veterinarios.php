@@ -3,35 +3,25 @@ session_start();
 require '../services/connection.php';
 
 // Verificar que solo pueda entrar el admin
-if (!isset($_SESSION['id_usuario']) || ($_SESSION['rol'] ?? '') !== 'admin') {
-    $_SESSION['error'] = "Debes iniciar sesión como admin para ver los veterinarios.";
+if (!isset($_SESSION['id_veterinario'])) {
+    $_SESSION['error'] = "Debes iniciar sesión como Veterinario para ver los veterinarios de nuestro centro.";
     header("Location: ./login.php");
     exit();
 }
 
-$id_usuario = $_SESSION['id_usuario'];
+$id_veterinario = $_SESSION['id_veterinario'];
 
+// Construir la consulta con filtro
 $where = "1=1";
-$params = [];
-$types = '';
-
 if (!empty($_GET['filtro-especialidad'])) {
-    $where .= " AND especialidad_veterinario = ?";
-    $params[] = $_GET['filtro-especialidad'];
-    $types .= 's';
+    $filtro_especialidad = mysqli_real_escape_string($conn, $_GET['filtro-especialidad']);
+    $where .= " AND especialidad_veterinario LIKE '%$filtro_especialidad%'";
 }
 
 $sql = "SELECT id_veterinario, nombre_veterinario, apellidos_veterinario, telefono_veterinario, email_veterinario, salario_veterinario, especialidad_veterinario 
         FROM veterinario WHERE $where ORDER BY nombre_veterinario ASC";
 
-$stmt = $conn->prepare($sql);
-
-if ($types) {
-    $stmt->bind_param($types, ...$params);
-}
-
-$stmt->execute();
-$result = $stmt->get_result();
+$result = mysqli_query($conn, $sql);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -53,60 +43,54 @@ $result = $stmt->get_result();
     <img src="../resources/logo_perriatria_blanco.png" alt="Logo Perriatria Blanco" class="logo-header">
   </div>
 </header>
-
 <ul class="nav nav-tabs custom-navbar w-100">
   <div class="nav-left">
-    <li class="nav-item"><a class="nav-link" href="../index.php">Inicio</a></li>
-    <li class="nav-item"><a class="nav-link" href="./mascotas.php">Mascotas</a></li>
-    <li class="nav-item"><a class="nav-link active" href="./veterinarios.php">Veterinarios</a></li>
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="../index.php">Inicio</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="./mascotas.php">Mascotas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="./veterinarios.php">Veterinarios</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="./mascotas_veterinario.php">Pacientes</a>
+    </li>
   </div>
   <div class="nav-right">
-    <?php if (!isset($_SESSION['id_usuario'])): ?>
-      <li class="nav-item"><a class="nav-link" href="./login.php">Iniciar sesión</a></li>
-      <li class="nav-item"><a class="nav-link" href="./register.php">Darse de alta</a></li>
-    <?php else: ?>
-      <li class="nav-item">
-        <form action="../processes/logout.proc.php" method="post" class="d-inline">
-          <button type="submit" class="nav-link btn btn-link" style="display:inline; padding:0; border:none; background:none;">Cerrar sesión</button>
-        </form>
-      </li>
-    <?php endif; ?>
+    <li class="nav-item">
+      <a class="nav-link" href="./login.php">Iniciar sesión</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="./register.php">Darse de alta</a>
+    </li>
   </div>
 </ul>
 
 <div class="container mt-3">
   <?php if (isset($_SESSION['error'])): ?>
-    <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+    <div class="alert alert-danger"><?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></div>
   <?php endif; ?>
   <?php if (isset($_SESSION['success'])): ?>
-    <div class="alert alert-success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
+    <div class="alert alert-success"><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></div>
   <?php endif; ?>
 </div>
 
 <main>
   <section class="container">
-    <a href="./formulario_veterinario.php" class="btn btn-primary mb-3">Registro veterinario!</a>
+    <a href="./formulario_veterinario.php" class="btn btn-primary mb-3">Registrar veterinario</a>
     <h2 class="titulo-verde">Veterinarios registrados:</h2>
 
     <!-- Filtro -->
     <form method="GET" class="row g-3 mb-4 ms-1 me-1">
       <div class="col-md-4">
-        <label for="filtro-especialidad">Especialidad:</label>
-        <select class="form-select" name="filtro-especialidad" id="filtro-especialidad">
-          <option value="">Todas</option>
-          <?php
-          $res_especialidades = mysqli_query($conn, "SELECT DISTINCT especialidad_veterinario FROM veterinario");
-          while ($row = mysqli_fetch_assoc($res_especialidades)) {
-            $val = htmlspecialchars($row['especialidad_veterinario']);
-            $sel = (isset($_GET['filtro-especialidad']) && $_GET['filtro-especialidad'] === $val) ? 'selected' : '';
-            echo "<option value='$val' $sel>$val</option>";
-          }
-          ?>
-        </select>
+        <label for="filtro-especialidad">Buscar por especialidad:</label>
+        <input type="text" class="form-control" name="filtro-especialidad" id="filtro-especialidad" placeholder="Ejemplo: Cirugía" value="<?php echo htmlspecialchars($_GET['filtro-especialidad'] ?? ''); ?>">
       </div>
 
       <div class="col-md-3 d-flex align-items-end">
-        <button type="submit" class="btn btn-success me-2">Aplicar filtros</button>
+        <button type="submit" class="btn btn-success me-2">Buscar</button>
         <a href="veterinarios.php" class="btn btn-outline-secondary">Limpiar</a>
       </div>
     </form>

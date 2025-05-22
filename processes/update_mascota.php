@@ -125,6 +125,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['chip'], $_POST['nombre
             header("Location: ../view/formulario_mascota.php");
             exit();
         }
+
+        // Redimensionar a 300x300 sin importar el formato
+        $origen = @imagecreatefromstring(file_get_contents($destino));
+        if ($origen) {
+            $ancho_orig = imagesx($origen);
+            $alto_orig = imagesy($origen);
+            $nuevo = imagecreatetruecolor(100, 100);
+            imagecopyresampled($nuevo, $origen, 0, 0, 0, 0, 100, 100, $ancho_orig, $alto_orig);
+            imagejpeg($nuevo, $destino, 85); // Guarda como JPG
+            imagedestroy($origen);
+            imagedestroy($nuevo);
+        }
     }
 
     // Actualizar la mascota

@@ -3,7 +3,7 @@ include "../services/connection.php";
 session_start();
 
 // Cambia la validación de sesión según el rol que administre veterinarios
-if (!isset($_SESSION['id_propietario'])) {
+if (!isset($_SESSION['id_veterinario'])) {
     header("Location: ../view/login.php");
     exit();
 }

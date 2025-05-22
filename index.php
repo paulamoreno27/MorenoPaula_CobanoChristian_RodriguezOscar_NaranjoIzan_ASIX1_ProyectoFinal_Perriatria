@@ -49,7 +49,6 @@ session_start();
     </div>
   </ul>
 
-
   <main class="container mt-4">
     <section class="quienes-somos seccion">
       <div class="quienes-texto">

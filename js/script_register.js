@@ -4,6 +4,10 @@ function mostrarError(elemento, mensaje) {
     elemento.style.color = "red";  // Cambia el color a rojo
 }
 
+function limpiarError(id, inputId) {
+    document.getElementById(id).innerText = "";
+    document.getElementById(inputId).style.backgroundColor = "rgba(105, 227, 134, 0.44)"; // Verde
+}
 // Función para validar el usuario
 function validarUsuario() {
     let usuario = document.getElementById("usuario").value.trim();
@@ -103,6 +107,7 @@ function validarDireccion() {
 
     if (direccion.length < 5) {
         mostrarError(errorDireccion, "La dirección debe tener al menos 5 caracteres.");
+        document.getElementById("direccion").style.backgroundColor = "rgba(227, 105, 105, 0.44)";
         return false;
     }
 

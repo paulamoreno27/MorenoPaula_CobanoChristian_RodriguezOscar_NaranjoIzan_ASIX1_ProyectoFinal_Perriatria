@@ -173,7 +173,16 @@ mysqli_stmt_close($stmt);
         </select>
         <p id="veterinarioError" class="mensaje-error"></p>
       </div>
-
+        
+      <div class="mb-3">
+        <label for="foto" class="form-label fw-bold">Foto de la mascota (opcional):</label>
+        <input type="file" id="foto" name="foto" class="form-control" accept="image/*" onblur="valFotoMascota()">
+        <p id="fotoError" class="mensaje-error"></p>
+        <?php if (!empty($mascota['foto_mascota'])): ?>
+          <img src="../resources/<?php echo htmlspecialchars($mascota['foto_mascota']); ?>" alt="Foto mascota" style="max-width: 150px; margin-top: 10px; border-radius: 5px;">
+        <?php endif; ?>
+      </div>
+      
       <button type="submit" class="btn btn-success w-100">Guardar cambios</button>
     </form>
   </div>

@@ -3,7 +3,7 @@ session_start();
 require '../services/connection.php';
 
 if (!isset($_SESSION['id_veterinario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión como veterinario para ver tus mascotas.";
+    $_SESSION['error'] = "Debes iniciar sesión como Veterinario para ver a los pacientes.";
     header("Location: ./login.php");
     exit();
 }
@@ -128,12 +128,16 @@ if (!$result) {
         <select class="form-select" name="filtro-especie" id="filtro-especie">
           <option value="">Todas</option>
           <?php
-          $res_especie = mysqli_query($conn, "SELECT DISTINCT especie_mascota FROM mascota WHERE id_propietario = $id_propietario");
-          while ($row = mysqli_fetch_assoc($res_especie)) {
-            $val = htmlspecialchars($row['especie_mascota']);
-            $sel = (isset($_GET['filtro-especie']) && $_GET['filtro-especie'] === $val) ? 'selected' : '';
-            echo "<option value='$val' $sel>$val</option>";
-          }
+          $res_especie = mysqli_query($conn, "SELECT DISTINCT e.id_especie, e.nombre_especie FROM especie e
+            INNER JOIN mascota m ON m.id_especie_mascota = e.id_especie
+            WHERE m.id_veterinario_mascota = $id_veterinario
+            ");
+            while ($row = mysqli_fetch_assoc($res_especie)) {
+            $id = $row['id_especie'];
+            $nombre = htmlspecialchars($row['nombre_especie']);
+            $sel = (isset($_GET['filtro-especie']) && $_GET['filtro-especie'] == $id) ? 'selected' : '';
+            echo "<option value='$id' $sel>$nombre</option>";
+            }
           ?>
         </select>
       </div>
@@ -143,12 +147,17 @@ if (!$result) {
         <select class="form-select" name="filtro-raza" id="filtro-raza">
           <option value="">Todas</option>
           <?php
-          $res_raza = mysqli_query($conn, "SELECT DISTINCT raza_mascota FROM mascota WHERE id_propietario = $id_propietario");
-          while ($row = mysqli_fetch_assoc($res_raza)) {
-            $val = htmlspecialchars($row['raza_mascota']);
-            $sel = (isset($_GET['filtro-raza']) && $_GET['filtro-raza'] === $val) ? 'selected' : '';
-            echo "<option value='$val' $sel>$val</option>";
-          }
+          $res_raza = mysqli_query($conn, "SELECT DISTINCT r.id_raza, r.raza_nombre
+            FROM raza r
+            INNER JOIN mascota m ON m.id_raza_mascota = r.id_raza
+            WHERE m.id_veterinario_mascota = $id_veterinario
+            ");
+            while ($row = mysqli_fetch_assoc($res_raza)) {
+            $id = $row['id_raza'];
+            $nombre = htmlspecialchars($row['raza_nombre']);
+            $sel = (isset($_GET['filtro-raza']) && $_GET['filtro-raza'] == $id) ? 'selected' : '';
+            echo "<option value='$id' $sel>$nombre</option>";
+            }
           ?>
         </select>
       </div>

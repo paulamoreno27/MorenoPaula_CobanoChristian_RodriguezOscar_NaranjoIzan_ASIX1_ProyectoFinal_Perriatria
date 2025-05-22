@@ -72,6 +72,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../view/formulario_mascota.php");
             exit();
         }
+        
+        $origen = @imagecreatefromstring(file_get_contents($destino));
+        if ($origen) {
+            $ancho_orig = imagesx($origen);
+            $alto_orig = imagesy($origen);
+            $nuevo = imagecreatetruecolor(50, 50);
+            imagecopyresampled($nuevo, $origen, 0, 0, 0, 0, 50, 50, $ancho_orig, $alto_orig);
+            imagejpeg($nuevo, $destino, 85); // Se guarda sobre el mismo archivo
+            imagedestroy($origen);
+            imagedestroy($nuevo);
+        }
     }
 
     // Evitar duplicados por nombre

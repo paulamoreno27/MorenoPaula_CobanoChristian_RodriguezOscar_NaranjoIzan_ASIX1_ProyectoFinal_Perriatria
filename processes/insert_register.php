@@ -10,8 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_REQUEST['email'];
     $telefono = $_REQUEST['telefono'];
     $direccion = $_REQUEST['direccion'];
-    $contrasena = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $confirmContrasena = password_hash($_POST['confirm_password'], PASSWORD_DEFAULT);
 
     // Validación PHP
     if (empty($nombre) || empty($email) || empty($telefono) || empty($direccion) || empty($_POST['password']) || empty($_POST['confirm_password'])) {
@@ -49,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location:../view/register.php");
         exit;
     }
+
+    // Hashear la contraseña después de la validación
+    $contrasena = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     $sql = "SELECT * FROM propietario";
     $result = mysqli_query($conn, $sql);

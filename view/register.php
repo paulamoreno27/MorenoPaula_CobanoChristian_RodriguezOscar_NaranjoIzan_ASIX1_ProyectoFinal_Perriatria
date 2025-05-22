@@ -1,5 +1,5 @@
 <?php
-session_start(); // Ensure session is started to access error messages
+session_start(); // Asegúrate de que la sesión esté iniciada para acceder a los mensajes de error
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,40 +16,50 @@ session_start(); // Ensure session is started to access error messages
         <h3>
             <a href="../index.php" class="btn">Volver al inicio</a>
         </h3>
-    <div>
-        <img src="../resources/logo_perriatria.png" alt="Logo Perriatria" class="logo-form">
-    </div>
-    <h1 class="form-title">Registro</h1>
+        <div>
+            <img src="../resources/logo_perriatria.png" alt="Logo Perriatria" class="logo-form">
+        </div>
+        <h1 class="form-title">Registro</h1>
+
+        <!-- Mostrar error de sesión si existe -->
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?php 
+                    echo htmlspecialchars($_SESSION['error']); 
+                    unset($_SESSION['error']); // Limpiar el error después de mostrarlo
+                ?>
+            </div>
+        <?php endif; ?>
 
         <div class="form-content">
             <form method="post" action="../processes/insert_register.php" onsubmit="return ValidarFormularioRegistro()">
 
-            <label for="email" class="subtitulos">Email:</label>
-            <input name="email" type="email" id="email" onblur="validarEmail()" class="camposrellenar" required>
-            <p id="error_email" class="mensaje-error"></p>
+                <label for="email" class="subtitulos">Email:</label>
+                <input name="email" type="email" id="email" onblur="validarEmail()" class="camposrellenar" required>
+                <p id="error_email" class="mensaje-error"></p>
 
-            <label for="usuario" class="subtitulos">Usuario:</label>
-            <input id="usuario" name="usuario" onblur="validarUsuario()" class="camposrellenar" required>
-            <p id="error_usuario" class="mensaje-error"></p>
+                <label for="usuario" class="subtitulos">Usuario:</label>
+                <input id="usuario" name="usuario" onblur="validarUsuario()" class="camposrellenar" required>
+                <p id="error_usuario" class="mensaje-error"></p>
 
-            <label for="telefono" class="subtitulos">Teléfono:</label>
-            <input name="telefono" type="tel" id="telefono" onblur="validarTelefono()" class="camposrellenar" required>
-            <p id="error_telefono" class="mensaje-error"></p>
+                <label for="telefono" class="subtitulos">Teléfono:</label>
+                <input name="telefono" type="tel" id="telefono" onblur="validarTelefono()" class="camposrellenar" required>
+                <p id="error_telefono" class="mensaje-error"></p>
 
-            <label for="direccion" class="subtitulos">Dirección:</label>
-            <input type="text" id="direccion" name="direccion" onblur="validarDireccion()" class="camposrellenar" required>
-            <p id="error_direccion" class="mensaje-error"></p>
+                <label for="direccion" class="subtitulos">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" onblur="validarDireccion()" class="camposrellenar" required>
+                <p id="error_direccion" class="mensaje-error"></p>
 
-            <label for="password" class="subtitulos">Contraseña:</label>
-            <input type="password" id="password" name="password" onblur="validarPassword()" class="camposrellenar" required>
-            <p id="error_password" class="mensaje-error"></p>
+                <label for="password" class="subtitulos">Contraseña:</label>
+                <input type="password" id="password" name="password" onblur="validarPassword()" class="camposrellenar" required>
+                <p id="error_password" class="mensaje-error"></p>
 
-            <label for="confirm_password" class="subtitulos">Confirmar Contraseña:</label>
-            <input type="password" id="confirm_password" name="confirm_password" onblur="validarConfirmPassword()" class="camposrellenar" required>
-            <p id="error_confirm_password" class="mensaje-error"></p>
+                <label for="confirm_password" class="subtitulos">Confirmar Contraseña:</label>
+                <input type="password" id="confirm_password" name="confirm_password" onblur="validarConfirmPassword()" class="camposrellenar" required>
+                <p id="error_confirm_password" class="mensaje-error"></p>
 
-            <input class="btn" type="submit" value="Registrarse">
-            <a href="./login.php" class="registrarse">¿Ya tienes cuenta? Inicia sesión aquí!</a>
+                <input class="btn" type="submit" value="Registrarse">
+                <a href="./login.php" class="registrarse">¿Ya tienes cuenta? Inicia sesión aquí!</a>
 
             </form>
         </div>

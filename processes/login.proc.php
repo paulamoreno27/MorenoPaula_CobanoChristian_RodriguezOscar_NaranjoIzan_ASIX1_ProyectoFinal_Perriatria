@@ -80,37 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                 $_SESSION['error'] = "Contraseña incorrecta.";
             }
         } else {
-            // ✅ Verificar si el usuario es un ADMIN
-            $query_admin = "SELECT id_usuario, password, rol_usuario FROM usuarios WHERE username = ?";
-            $stmt_admin = mysqli_prepare($conn, $query_admin);
-            mysqli_stmt_bind_param($stmt_admin, "s", $usuario);
-            mysqli_stmt_execute($stmt_admin);
-            $result_admin = mysqli_stmt_get_result($stmt_admin);
-
-            if ($result_admin && mysqli_num_rows($result_admin) > 0) {
-                $row = mysqli_fetch_assoc($result_admin);
-                $hash = $row['password'];
-
-                if ($password === $hash || password_verify($password, $hash)) {
-                    $_SESSION['id_usuario'] = $row['id_usuario'];
-                    $_SESSION['usuario'] = $usuario;
-                    $_SESSION['rol'] = $row['rol_usuario'];
-
-                    if (strtolower($row['rol_usuario']) === 'admin') {
-                        header("Location: ../view/veterinarios.php");
-                        exit();
-                    } else {
-                        header("Location: ../view/mascotas_veterinario.php");
-                        exit();
-                    }
-                } else {
-                    $_SESSION['error'] = "Contraseña incorrecta.";
-                }
-            } else {
-                $_SESSION['error'] = "El usuario no existe.";
-            }
-
-            mysqli_stmt_close($stmt_admin);
+            $_SESSION['error'] = "El usuario no existe.";
         }
 
         mysqli_stmt_close($stmt_veterinario);

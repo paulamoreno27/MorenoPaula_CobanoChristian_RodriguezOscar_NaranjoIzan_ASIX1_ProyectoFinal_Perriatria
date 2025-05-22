@@ -3,8 +3,8 @@ session_start();
 require '../services/connection.php';
 
 // CORRECTO: Solo permite acceso a veterinarios logueados
-if (!isset($_SESSION['id_veterinario'])) {
-    $_SESSION['error'] = "Debes iniciar sesión como Veterinario para realizar esta acción.";
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
+    $_SESSION['error'] = "Acceso restringido. Solo administradores.";
     header("Location: ../view/login.php");
     exit();
 }
